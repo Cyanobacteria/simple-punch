@@ -19,4 +19,4 @@ Route::get('/errorendwork', 'IndexController@endedwork');
 Route::get('/', 'IndexController@index');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ok', 'WokerController@index');
-Route::post('work', 'WokerController@store')->name('Worker.store');
+Route::post('/work', 'WokerController@store')->name('Worker.store');

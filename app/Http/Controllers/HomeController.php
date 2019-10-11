@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User_time;
+use App\punchRecord;
+use App\Services\Format;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 
@@ -25,15 +27,11 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
     public function index()
     {
 
-
-        $data=User_time::where('name','=',Auth::user()->name)->get();
-        $allRecord=User_time::orderBy('created_at')
-            ->orderBy('status')
-            ->get();
-
-        return view('home',['time_data'=>$data,'allRecord'=>$allRecord,'message'=>[]]);
+        $records=Format::index();
+        return view('home', ['now' => now(), 'records' => $records, 'message' => []]);
     }
 }

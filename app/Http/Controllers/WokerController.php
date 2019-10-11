@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\User_time;
+use App\PuncheRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,98 +34,63 @@ class WokerController extends Controller
 
     public function __construct()
     {
-        $this->message=[];
+        $this->message = [];
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    private function returnHome(){
+    private function returnHome()
+    {
 
 //        return view('home',[
 //            'time_data'=>$this->record,
 //            'message'=>$this->message
 //            ]);
     }
+
+    private function RecordDataJoin($t){
+
+    }
+
+    private function insertRecord($params)
+    {
+        try {
+            $t = new PuncheRecord;
+            $t->user_id = $params->user_id;
+            $t->shift_type_id  = $params->shift_type_id;
+            $t->punch_type_id  = $params->punch_type_id;
+            $t->punche_user_id  = $params->punche_user_id;
+            $t->status = $params->status;
+            $t->remark = $params->remark;
+            $t->created_at = now();
+
+            $insertId=$t->save();
+        } catch (\Exception $e) {
+        return $e;
+        }
+        return $t;
+    }
+
     public function store(Request $request)
     {
-        $this->record=User_time::where('name','=',Auth::user()->name)->get();
-//        print_r($request);
-//        dd($request['status']);
-//        dd($request['user_name']);
-//        $test=DB::table('user_time')->insert(
-//            ['name' => $request['user_name'],
-//                'status' => $request['status']]
-//        );
+        $user_id = Auth::user()->id;
+        $punchetype = $request->{'punche-type'};
+        $shiftType = $request->{'shift-type'};
+        $result = $this->insertRecord((object)[
+         'user_id'=>$user_id,
+         'shift_type_id'=>$shiftType,
+         'punch_type_id'=>$punchetype,
+         'punche_user_id'=>$user_id,
+         'status'=>1,
+         'remark'=>'',
+        ]);
+        $message[0]=($result)?'success':$result->getMessage();
 
-        if($request['status']=='上班'){
-            $cheack_time=User_time::where('name','=',Auth::user()->name)
-                ->where('status','=','上班')
-                ->where(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"), DB::raw('CURRENT_DATE()'))
-                ->get();
-            if(count($cheack_time)!=0){
-                $this->message[]='data already exist!!';
-            }else{
-               $now=date('H:i');
-               $cknow=date('9:30');
-
-               if(strtotime($now)>strtotime($cknow)){
-                   $ut= new User_time;
-                   $ut->{'name'}=$request['user_name'];
-                   $ut->{'status'}=$request['status'];
-                   $ut->{'detail'}='未準時';
-                   $ut->save();
-                   $this->message[]="success punch in time: {$ut->created_at}";
-                   //return view('ok',['time'=> $ut->created_at]);
-            }else{
-                   $ut= new User_time;
-                   $ut->{'name'}=$request['user_name'];
-                   $ut->{'status'}=$request['status'];
-                   $ut->{'detail'}='正常';
-                   $ut->save();
-                   $this->message[]="success punch in time: {$ut->created_at}";
-                   //return view('ok',['time'=> $ut->created_at]);
-            }
-
-            }
-        }else if($request['status']=='下班'){
-
-            $cheack_time=User_time::where('name','=',Auth::user()->name)
-                ->where('status','=','下班')
-                ->where(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"), DB::raw('CURRENT_DATE()'))
-                ->get();
-
-            if(count($cheack_time)!=0){
-                $this->message[]='data already exist!!';
-
-
-            }else{
-
-                $now=date('H:i');
-                $cknow=date('18:00');
-
-                if(strtotime($now)<strtotime($cknow)){
-                    $ut= new User_time;
-                    $ut->{'name'}=$request['user_name'];
-                    $ut->{'status'}=$request['status'];
-                    $ut->{'detail'}='異常';
-                    $ut->save();
-
-                    $this->message[]="success punch out time: {$ut->created_at}";
-                }else{
-                    $ut= new User_time;
-                    $ut->{'name'}=$request['user_name'];
-                    $ut->{'status'}=$request['status'];
-                    $ut->{'detail'}='正常';
-                    $ut->save();
-                    $this->message[]="success punch out time: {$ut->created_at}";
-                }
-            }
-        }
-        header("location:http://time.funcity18.com/home?message={$this->message[0]}");
+        header("location:http://127.0.0.1:8082/home?message={$message[0]}");
         //die();
         //Redirect::to('home', ['message' => $this->message[0]]);
 //        die('ff');
@@ -137,7 +102,7 @@ class WokerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -148,7 +113,7 @@ class WokerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -159,8 +124,8 @@ class WokerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -171,7 +136,7 @@ class WokerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

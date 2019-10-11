@@ -27,6 +27,7 @@ class ForgotPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        throw new \Exception("404");
+        //$this->middleware('guest');
     }
 }

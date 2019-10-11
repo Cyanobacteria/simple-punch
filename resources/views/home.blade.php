@@ -1,90 +1,110 @@
 @extends('layouts.app')
 
 @section('content')
+
+
+
+
+
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                {{--            <div>{{Auth::user()->name}}</div>--}}
+                @if(isset($_GET['message']) )
+                    <div class="alert alert-success">
+                        {{--                            @foreach($message as $m)--}}
+                        <strong>{{$_GET['message']}}</strong>
+                        {{--                            @endforeach--}}
+                    </div>
+                @endif
+                <div class="row">
+                    <div class="col-md-5">
+                        當前用戶 : {{Auth::user()->name}}
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div id="showbox" class="text-danger"></div>
+                    </div>
 
 
+                </div>
 
 
-
-                @if(Auth::user()->admin != 1)
-                    @if(isset($_GET['message']) )
-                        <div class="alert alert-success">
-{{--                            @foreach($message as $m)--}}
-                                <strong>{{$_GET['message']}}</strong>
-{{--                            @endforeach--}}
+                <script>ShowTime()</script>
+                <form method="post" action="{{ route('Worker.store') }}">
+                    @csrf
+                    <input hidden type="text" name="user_name" value="{{ Auth::user()->name }}">
+                    <br>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">打卡動作類型</span>
                         </div>
-                    @endif
+                        <select class="form-control" name="punche-type">
+                            <option value="1">上班</option>
+                            <option value="2">下班</option>
 
-                    <form method="post" action="{{ route('Worker.store') }}">
-                        @csrf
-                        <input hidden type="text" name="user_name" value="{{ Auth::user()->name }}">
-                        <br>
-                        <div class="form-group">
-                            <select class="form-control" name="status">
-                                　
-                                <option value="上班">上班</option>
-                                　
-                                <option value="下班">下班</option>
-                            </select>
+                        </select>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">班別</span>
                         </div>
-                        <button class="btn btn-danger" type="submit">送出</button>
-                    </form>
-                    @if(isset($time_data))
-                        <table class="table" style="margin-top: 50px;">
-                            <thead>
+                        <select class="form-control" name="shift-type">
+                            <option value="3">全班</option>
+                            <option value="1">早班</option>
+                            <option value="2">午班</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-danger align-content-sm-end" type="submit">punch!!</button>
+                </form>
+                @if( $records!=null)
+                    <h2 class="text-center" style="margin-top: 30px;">今日打卡紀錄</h2>
+                    <table class="table" style="margin-top: 10px;">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>班別</th>
+                            <th>動作</th>
+                            <th>結果</th>
+                            <th>時間</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        @foreach($records as $time)
                             <tr>
-                                <th>名稱</th>
-                                <th>狀態</th>
-                                <th>時間</th>
-                                <th>描述</th>
+                                <td>{{$time->shift}}</td>
+                                <td>{{$time->action}}</td>
+                                @if($time->result<>'正常')
+                                    <td class="table-danger">{{$time->result}}</td>
+                                @else
+                                    <td class="">{{$time->result}}</td>
+                                @endif
+                                <td>{{$time->time}}</td>
                             </tr>
-                            </thead>
-                            <tbody>
+                        @endforeach
 
-                            @foreach($time_data as $time)
-                                <tr>
-                                    <td>{{$time->name}}</td>
-                                    <td>{{$time->status}}</td>
-                                    <td>{{$time->created_at}}</td>
-                                    <td>{{$time->detail}}</td>
-                                </tr>
-                            @endforeach
-
-                            </tbody>
-                        </table>
-                    @endif
-                @else
-
-                    @if(isset($allRecord))
-                        <table class="table" style="margin-top: 50px;">
-                            <thead>
-                            <tr>
-                                <th>名稱</th>
-                                <th>狀態</th>
-                                <th>時間</th>
-                                <th>描述</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            @foreach($allRecord as $time)
-                                <tr>
-                                    <td>{{$time->name}}</td>
-                                    <td>{{$time->status}}</td>
-                                    <td>{{$time->created_at}}</td>
-                                    <td>{{$time->detail}}</td>
-                                </tr>
-                            @endforeach
-
-                            </tbody>
-                        </table>
-                    @endif
+                        </tbody>
+                    </table>
                 @endif
             </div>
         </div>
     </div>
 @endsection
+
+
+<script>
+    let NowDate = new Date('{{$now}}');
+    const getTime=(NowDate)=>{
+        NowDate.setSeconds(NowDate.getSeconds()+1);
+        let h = NowDate.getHours();
+        let m = NowDate.getMinutes();
+        let s = NowDate.getSeconds();
+        return {h,m,s};
+    }
+    function ShowTime() {
+        let {h,m,s}=getTime(NowDate);
+        document.getElementById('showbox').innerHTML = '當前時間 : '+h + ':' + m + ':' + s ;
+        setTimeout('ShowTime()', 1000);
+    }
+</script>

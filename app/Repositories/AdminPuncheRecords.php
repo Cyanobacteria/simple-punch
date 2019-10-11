@@ -4,7 +4,7 @@
 namespace App\Repositories;
 
 
-class UserPuncheRecords
+class AdminPuncheRecords
 {
 
 }
