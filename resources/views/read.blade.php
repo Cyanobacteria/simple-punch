@@ -32,31 +32,21 @@
 
 
                 <script>ShowTime()</script>
-                <form method="post" action="{{ route('Worker.store') }}">
+                <form method="post" action="{{ route('read.post') }}">
                     @csrf
-
                     <br>
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">打卡動作類型</span>
-                        </div>
-                        <select class="form-control" name="punche-type">
-                            <option value="1">上班</option>
-                            <option value="2">下班</option>
 
-                        </select>
-                    </div>
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">班別</span>
+                            <span class="input-group-text">月份</span>
                         </div>
-                        <select class="form-control" name="shift-type">
-                            <option value="3">全班</option>
-                            <option value="1">早班</option>
-                            <option value="2">午班</option>
+                        <select class="form-control" name="month">
+                            @foreach($month as $m)
+                                <option value="{{$m}}">{{$m}}</option>
+                            @endforeach
                         </select>
                     </div>
-                    <button class="btn btn-danger align-content-sm-end" type="submit">punch!!</button>
+                    <button class="btn btn-danger align-content-sm-end" type="submit">查詢</button>
                 </form>
                 @if( $records!=null)
                     <h2 class="text-center" style="margin-top: 30px;">今日打卡紀錄</h2>
@@ -71,17 +61,22 @@
                         </thead>
                         <tbody>
 
-                        @foreach($records as $time)
+                        @foreach($records as $month=>$days)
                             <tr>
-                                <td>{{$time->shift}}</td>
-                                <td>{{$time->action}}</td>
-                                @if($time->result<>'正常')
-                                    <td class="table-danger">{{$time->result}}</td>
-                                @else
-                                    <td class="">{{$time->result}}</td>
-                                @endif
-                                <td>{{$time->time}}</td>
+                                <td class="text-center" colspan="4">{{$month}}</td>
                             </tr>
+                            @foreach($days as $day)
+                                <tr>
+                                    <td>{{$day->shift}}</td>
+                                    <td>{{$day->action}}</td>
+                                    @if($day->result<>'正常')
+                                        <td class="table-danger">{{$day->result}}</td>
+                                    @else
+                                        <td class="">{{$day->result}}</td>
+                                    @endif
+                                    <td>{{$day->time}}</td>
+                                </tr>
+                            @endforeach
                         @endforeach
 
                         </tbody>
@@ -95,16 +90,17 @@
 
 <script>
     let NowDate = new Date('{{$now}}');
-    const getTime=(NowDate)=>{
-        NowDate.setSeconds(NowDate.getSeconds()+1);
+    const getTime = (NowDate) => {
+        NowDate.setSeconds(NowDate.getSeconds() + 1);
         let h = NowDate.getHours();
         let m = NowDate.getMinutes();
         let s = NowDate.getSeconds();
-        return {h,m,s};
+        return {h, m, s};
     }
+
     function ShowTime() {
-        let {h,m,s}=getTime(NowDate);
-        document.getElementById('showbox').innerHTML = '當前時間 : '+h + ':' + m + ':' + s ;
+        let {h, m, s} = getTime(NowDate);
+        document.getElementById('showbox').innerHTML = '當前時間 : ' + h + ':' + m + ':' + s;
         setTimeout('ShowTime()', 1000);
     }
 </script>

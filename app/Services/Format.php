@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class Format
 {
+    //多日打卡紀錄，可以拆分成多個每日進行，最後再合併即可
     private static function indexTreeStructure($todayPunchRecord)
     {
         $shiftAry = [];
@@ -113,6 +114,39 @@ class Format
         $records = (!isset($shiftIdAry)) ? null : $shiftIdAry;
         //dd($records);
         return $records;
+
+    }
+
+    public static function month($params)
+    {
+        $month = $params;
+        $start = $month . '-1 00:00:00';
+        $end = $month . '-31 23:59:59';
+//        dd($params);
+        $monthPunchRecord = UserPuncheRecords::getByTimeRange([
+            'start' => $start,
+            'end' => $end,
+        ]);
+        $daysAry = [];
+        foreach ($monthPunchRecord as $k => &$v) {
+            $ori = new \DateTime($v->time);
+            $day = $ori->format('Y-m-d');
+            $daysAry[$day] = [];
+            $v->day = $day;
+        }
+        foreach ($monthPunchRecord as $k => $v) {
+            $daysAry[$v->day][] = $v;
+        }
+        foreach ($daysAry as $k => &$v) {
+            if (count($v) > 0) {
+                $shiftIdAry = self::indexTreeStructure($v);
+                $v = $shiftIdAry;
+            }
+
+        }
+
+        return $daysAry;
+
 
     }
 
