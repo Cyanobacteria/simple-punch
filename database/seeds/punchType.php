@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class puncheType extends Seeder
+class punchType extends Seeder
 {
     /**
      * Run the database seeds.

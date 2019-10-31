@@ -4,7 +4,7 @@
 namespace App\Services;
 
 
-use App\Repositories\UserPuncheRecords;
+use App\Repositories\UserPunchRecords;
 use Illuminate\Support\Facades\DB;
 
 class Format
@@ -102,7 +102,7 @@ class Format
     {
 
         $today = date('Y-m-d');
-        $todayPunchRecord = UserPuncheRecords::getByTimeRange([
+        $todayPunchRecord = UserPunchRecords::getByTimeRange([
             'start' => $today . ' 00-00-00',
             'end' => $today . ' 23-59-59',
         ]);
@@ -123,7 +123,7 @@ class Format
         $start = $month . '-1 00:00:00';
         $end = $month . '-31 23:59:59';
 //        dd($params);
-        $monthPunchRecord = UserPuncheRecords::getByTimeRange([
+        $monthPunchRecord = UserPunchRecords::getByTimeRange([
             'start' => $start,
             'end' => $end,
         ]);

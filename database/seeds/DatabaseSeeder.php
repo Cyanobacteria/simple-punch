@@ -13,7 +13,8 @@ class DatabaseSeeder extends Seeder
     {
 
          $this->call(status::class);
-        $this->call(puncheType::class);
+        $this->call(punchType::class);
         $this->call(shiftType::class);
+        $this->call(punchResult::class);
     }
 }

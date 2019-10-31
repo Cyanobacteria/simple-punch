@@ -4,17 +4,17 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserTimeTable extends Migration
+class CreatePunchResultTable extends Migration
 {
     /**
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'user_time';
+    public $tableName = 'punch_results';
 
     /**
      * Run the migrations.
-     * @table user_time
+     * @table punch_result
      *
      * @return void
      */
@@ -22,11 +22,8 @@ class CreateUserTimeTable extends Migration
     {
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->bigIncrements('id');
-            $table->string('name', 191);
-            $table->string('status', 191);
-            $table->string('detail', 191);
-            $table->timestamps();
+            $table->increments('id');
+            $table->string('name', 20);
         });
     }
 

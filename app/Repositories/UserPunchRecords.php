@@ -7,7 +7,7 @@ namespace App\Repositories;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class UserPuncheRecords
+class UserPunchRecords
 {
     public static function getByTimeRange($params){
 

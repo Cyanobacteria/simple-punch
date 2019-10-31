@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\PuncheRecord;
+use App\PunchRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -59,11 +59,11 @@ class WokerController extends Controller
     private function insertRecord($params)
     {
         try {
-            $t = new PuncheRecord;
+            $t = new PunchRecord;
             $t->user_id = $params->user_id;
             $t->shift_type_id  = $params->shift_type_id;
             $t->punch_type_id  = $params->punch_type_id;
-            $t->punche_user_id  = $params->punche_user_id;
+            $t->punch_user_id  = $params->punch_user_id;
             $t->status = $params->status;
             $t->remark = $params->remark;
             $t->created_at = now();
@@ -78,13 +78,13 @@ class WokerController extends Controller
     public function store(Request $request)
     {
         $user_id = Auth::user()->id;
-        $punchetype = $request->{'punche-type'};
+        $punchtype = $request->{'punch-type'};
         $shiftType = $request->{'shift-type'};
         $result = $this->insertRecord((object)[
          'user_id'=>$user_id,
          'shift_type_id'=>$shiftType,
-         'punch_type_id'=>$punchetype,
-         'punche_user_id'=>$user_id,
+         'punch_type_id'=>$punchtype,
+         'punch_user_id'=>$user_id,
          'status'=>1,
          'remark'=>'',
         ]);
