@@ -40,7 +40,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">打卡動作類型</span>
                         </div>
-                        <select class="form-control" name="punche-type">
+                        <select class="form-control" name="punch-type">
                             <option value="1">上班</option>
                             <option value="2">下班</option>
 
