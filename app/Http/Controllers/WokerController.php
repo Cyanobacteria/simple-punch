@@ -46,15 +46,14 @@ class WokerController extends Controller
     private function returnHome()
     {
 
-//        return view('home',[
-//            'time_data'=>$this->record,
-//            'message'=>$this->message
-//            ]);
+        //        return view('home',[
+        //            'time_data'=>$this->record,
+        //            'message'=>$this->message
+        //            ]);
     }
 
-    private function RecordDataJoin($t){
-
-    }
+    private function RecordDataJoin($t)
+    { }
 
     private function insertRecord($params)
     {
@@ -68,9 +67,9 @@ class WokerController extends Controller
             $t->remark = $params->remark;
             $t->created_at = now();
 
-            $insertId=$t->save();
+            $insertId = $t->save();
         } catch (\Exception $e) {
-        return $e;
+            return $e;
         }
         return $t;
     }
@@ -80,20 +79,20 @@ class WokerController extends Controller
         $user_id = Auth::user()->id;
         $punchtype = $request->{'punch-type'};
         $shiftType = $request->{'shift-type'};
-        $result = $this->insertRecord((object)[
-         'user_id'=>$user_id,
-         'shift_type_id'=>$shiftType,
-         'punch_type_id'=>$punchtype,
-         'punch_user_id'=>$user_id,
-         'status'=>1,
-         'remark'=>'',
+        $result = $this->insertRecord((object) [
+            'user_id' => $user_id,
+            'shift_type_id' => $shiftType,
+            'punch_type_id' => $punchtype,
+            'punch_user_id' => $user_id,
+            'status' => 1,
+            'remark' => '',
         ]);
-        $message[0]=($result)?'success':$result->getMessage();
+        $message[0] = ($result) ? 'success' : $result->getMessage();
 
         header("location:http://127.0.0.1:8082/home?message={$message[0]}");
         //die();
         //Redirect::to('home', ['message' => $this->message[0]]);
-//        die('ff');
+        //        die('ff');
         //redirect('/home?message='.$this->message[0]);
 
 
