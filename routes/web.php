@@ -20,9 +20,11 @@ Route::get('/home', 'HomeController@index')->name('home');
 //check the punch record
 Route::get('/read', 'HomeController@read')->name('read.get');
 Route::post('/read', 'HomeController@read')->name('read.post');
-Route::get('/ok', 'WokerController@index');
+
 Route::post('/work', 'WokerController@store')->name('Worker.store');
 
+//------------
+Route::get('/ok', 'WokerController@index');
 
 
 //Route::get('/errorwork', 'IndexController@upedwork');

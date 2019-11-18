@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
 use App\PunchRecord;
+use App\PunchRecordHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -43,18 +45,8 @@ class WokerController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    private function returnHome()
-    {
 
-        //        return view('home',[
-        //            'time_data'=>$this->record,
-        //            'message'=>$this->message
-        //            ]);
-    }
-
-    private function RecordDataJoin($t)
-    { }
-
+    //DB動作
     private function insertRecord($params)
     {
         try {
@@ -63,6 +55,7 @@ class WokerController extends Controller
             $t->shift_type_id  = $params->shift_type_id;
             $t->punch_type_id  = $params->punch_type_id;
             $t->punch_user_id  = $params->punch_user_id;
+            $t->punch_result_id = $params->punch_result_id;
             $t->status = $params->status;
             $t->remark = $params->remark;
             $t->created_at = now();
@@ -74,22 +67,40 @@ class WokerController extends Controller
         return $t;
     }
 
+
     public function store(Request $request)
     {
-        $user_id = Auth::user()->id;
-        $punchtype = $request->{'punch-type'};
-        $shiftType = $request->{'shift-type'};
-        $result = $this->insertRecord((object) [
-            'user_id' => $user_id,
-            'shift_type_id' => $shiftType,
-            'punch_type_id' => $punchtype,
-            'punch_user_id' => $user_id,
+        //取值-存放在＄request  - parameter  - punche-type / shift-type
+        $punchData = array(
+            'user_id' => Auth::user()->id,
+            'shift_type_id' => $request->{'shift-type'},  //班別
+            'punch_type_id' => $request->{'punch-type'}, //上班-下班-請假
+            'punch_user_id' => Auth::user()->id,
+            'punch_result_id' => $request->{'punchResult'}, //打卡結果- 遲到-早退-正常
             'status' => 1,
-            'remark' => '',
+            'remark' => $request->{'remark'} ? $request->{'remark'} : '',
+        );
+
+
+        //寫入DB- punchRecord
+        $result = $this->insertRecord((object) $punchData);
+
+        //寫入DB- punchHistory - json 化 
+        PunchRecordHistory::create([
+            'punch_record_id' => $result->id,
+            'raw_data' => json_encode((object) $punchData),
+            'updated_at' => now()
         ]);
+
+
+
+
+        //提示訊息
         $message[0] = ($result) ? 'success' : $result->getMessage();
+        //echo ($result->id);
 
         header("location:http://127.0.0.1:8082/home?message={$message[0]}");
+
         //die();
         //Redirect::to('home', ['message' => $this->message[0]]);
         //        die('ff');
@@ -98,6 +109,23 @@ class WokerController extends Controller
 
     }
 
+
+
+
+
+
+    //--------------------------------------------------------------------------------------------
+    private function returnHome()
+    {
+
+        //        return view('home',[
+        //            'time_data'=>$this->record,
+        //            'message'=>$this->message
+        //            ]);
+    }
+
+    private function RecordDataJoin($t)
+    { }
     /**
      * Display the specified resource.
      *
