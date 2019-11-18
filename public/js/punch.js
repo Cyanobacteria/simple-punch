@@ -16,10 +16,14 @@ window.onload = function() {
                 Number(shiftType),
                 Number(punchType)
             );
+            //寫入punchResult
+            let punchText = document.getElementById("punchResult");
+            punchText.value = punchResult;
             //打卡結果異常｜遲到/早退 且 無輸入事由
             if (punchResult != 3 && remarkText.length < 1) {
                 //中止提交
                 this.event.preventDefault();
+
                 //顯示提示訊息
                 this.alert("你已遲到 / 早退 ｜ 請輸入原因 ");
                 //顯示remark 欄位

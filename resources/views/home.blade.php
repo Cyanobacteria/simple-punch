@@ -57,11 +57,15 @@
                         </select>
                     </div>
 
+                    <div class="input-group input-group-sm mb-3 d-none">
+                        <input  id="punchResult"  type="text" class="form-control" name="punchResult" >
+                    </div> 
+
                     <div  id="remark" class="input-group input-group-sm mb-3 d-none">
                         <div class="input-group-prepend">
                             <label for="remark" class="input-group-text" >遲到/早退原因</label>
                         </div>
-                        <input type="text" class="form-control" id="remark" name="remark" placeholder="請輸入遲到or早退原因">
+                        <input type="text" class="form-control"  name="remark" placeholder="請輸入遲到or早退原因">
                     </div>
 
                    
