@@ -40,21 +40,19 @@ class HomeController extends Controller
         dump($request->month);
         $records = Format::month($request->month);
 
-
-
-
         $month = DB::table('punch_records as a')
             ->select('a.created_at as date')
             ->get();
-        $newAry=[];
-        foreach ($month as $k=>$v){
 
-            $date=new \DateTime($v->date);
-            $newAry[]=$date->format("Y-m");
+        $newAry = [];
+
+        foreach ($month as $k => $v) {
+            $date = new \DateTime($v->date);
+            $newAry[] = $date->format("Y-m");
         }
 
-        $month= array_unique($newAry);
+        $month = array_unique($newAry);
 
-        return view('read', ['month'=>$month,'now' => now(), 'records' => $records, 'message' => []]);
+        return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
     }
 }

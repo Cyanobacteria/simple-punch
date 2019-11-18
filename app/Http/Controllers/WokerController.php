@@ -109,6 +109,13 @@ class WokerController extends Controller
 
     }
 
+    //取得使用者-月份紀錄
+    public function getUserRecords()
+    {
+        //使用 get-query - 取得月份
+
+    }
+
 
 
 
