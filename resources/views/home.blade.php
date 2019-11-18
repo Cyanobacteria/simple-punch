@@ -32,31 +32,42 @@
 
 
                 <script>ShowTime()</script>
-                <form method="post" action="{{ route('Worker.store') }}">
+                <form  id="punchForm" method="post" action="{{ route('Worker.store') }}">
                     @csrf
-
                     <br>
+                
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">打卡動作類型</span>
                         </div>
-                        <select class="form-control" name="punch-type">
+                        <select  id="punchType" class="form-control" name="punch-type">
                             <option value="1">上班</option>
                             <option value="2">下班</option>
-
                         </select>
                     </div>
+
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">班別</span>
                         </div>
-                        <select class="form-control" name="shift-type">
+                        <select  id="shiftType"  class="form-control" name="shift-type">
                             <option value="3">全班</option>
                             <option value="1">早班</option>
                             <option value="2">午班</option>
                         </select>
                     </div>
-                    <button class="btn btn-danger align-content-sm-end" type="submit">punch!!</button>
+
+                    <div  id="remark" class="input-group input-group-sm mb-3 d-none">
+                        <div class="input-group-prepend">
+                            <label for="remark" class="input-group-text" >遲到/早退原因</label>
+                        </div>
+                        <input type="text" class="form-control" id="remark" name="remark" placeholder="請輸入遲到or早退原因">
+                    </div>
+
+                   
+
+
+                    <button id="punchSubmit" class="btn btn-danger align-content-sm-end" type="submit">punch!!</button>
                 </form>
                 @if( $records!=null)
                     <h2 class="text-center" style="margin-top: 30px;">今日打卡紀錄</h2>
@@ -102,9 +113,15 @@
         let s = NowDate.getSeconds();
         return {h,m,s};
     }
+    
+
+    //動態時間
     function ShowTime() {
         let {h,m,s}=getTime(NowDate);
         document.getElementById('showbox').innerHTML = '當前時間 : '+h + ':' + m + ':' + s ;
         setTimeout('ShowTime()', 1000);
     }
+    
 </script>
+
+<script src="/js/punch.js"></script>
