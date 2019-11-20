@@ -12,7 +12,7 @@
 */
 
 
-
+//註冊登入登出
 Auth::routes();
 
 Route::get('/', 'IndexController@index');
@@ -22,6 +22,30 @@ Route::get('/read', 'HomeController@read')->name('read.get');
 Route::post('/read', 'HomeController@read')->name('read.post');
 //員工打卡
 Route::post('/work', 'WokerController@store')->name('Worker.store');
+//--------------
+
+//[管理者路由群組]
+Route::group(['prefix' => 'admin'], function () {
+    //管理者打卡 /punch
+    //打卡頁面 ｜ 檢視 - 打卡
+    Route::get('/punch', 'AdminController@home');
+    //檢視紀錄   ｜ 檢視-切換月份
+    Route::get('/records', 'AdminController@record');
+    //  Route::post('/records', 'AdminController@record');
+
+
+
+    //無用-與員工功能重複
+    //Route::post('/punch', 'AdminController@punch');
+
+    /*
+    
+    //檢視員工紀錄 ｜ 檢視-切換身份-更動紀錄-幫打請假卡
+    Route::get('/worker/record', 'AdminController@record');
+    Route::post('//worker/record', 'AdminController@record');
+    */
+});
+
 
 
 //------------
