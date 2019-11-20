@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->string('name', 191);
+            $table->integer('isAdmin')->default(0);
             $table->string('email', 191);
             $table->timestamp('email_verified_at')->nullable()->default(null);
             $table->string('password', 191);
@@ -39,8 +40,8 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-     public function down()
-     {
-       Schema::dropIfExists($this->tableName);
-     }
+    public function down()
+    {
+        Schema::dropIfExists($this->tableName);
+    }
 }
