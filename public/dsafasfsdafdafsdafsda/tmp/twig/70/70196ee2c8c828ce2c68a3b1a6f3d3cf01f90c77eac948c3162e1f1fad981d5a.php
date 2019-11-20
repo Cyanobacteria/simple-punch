@@ -282,6 +282,6 @@ class __TwigTemplate_31c66aef54d8cc179e13e1fc422bfc1e72bf8fb723c38fe12160312be05
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/structure/row_stats_table.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/structure/row_stats_table.twig");
+        return new Twig_Source("", "table/structure/row_stats_table.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/structure/row_stats_table.twig");
     }
 }

@@ -134,6 +134,6 @@ class __TwigTemplate_7d84971bfcd91b93faa05d197c06480a395192c461f32ab8aa53f1b6e60
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/structure/check_all_table_column.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/structure/check_all_table_column.twig");
+        return new Twig_Source("", "table/structure/check_all_table_column.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/structure/check_all_table_column.twig");
     }
 }

@@ -381,6 +381,6 @@ $context["sub_partition"], "getIndexLength", [], "method"), 3, 1);
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/structure/display_partitions.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/structure/display_partitions.twig");
+        return new Twig_Source("", "table/structure/display_partitions.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/structure/display_partitions.twig");
     }
 }

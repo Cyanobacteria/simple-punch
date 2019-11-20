@@ -18,20 +18,20 @@ class users extends Seeder
                 [
                     'id' => 1,
                     'name' => "admin",
-                    'isAdmin' => "1",
+                    'isAdmin' => 1,
                     'email' => 'admin@admin.com',
                     'password' => Hash::make($value),
                 ],
                 [
                     'id' => 2,
                     'name' => "user1",
-                    'isAdmin' => "0",
+                    'isAdmin' => 0,
                     'email' => 'user1@user1.com',
                     'password' => Hash::make($value),
                 ], [
                     'id' => 3,
                     'name' => "user2",
-                    'isAdmin' => "0",
+                    'isAdmin' => 0,
                     'email' => 'user2@user2.com',
                     'password' => Hash::make($value),
                 ],
