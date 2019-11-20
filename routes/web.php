@@ -31,6 +31,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/punch', 'AdminController@home');
     //檢視紀錄   ｜ 檢視-切換月份
     Route::get('/records', 'AdminController@record');
+    //檢視員工紀錄 ｜ 檢視-切換身份-更動紀錄-幫打請假卡
+    Route::get('/worker/record', 'AdminController@workerRecord');
+
     //  Route::post('/records', 'AdminController@record');
 
 
@@ -40,8 +43,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     /*
     
-    //檢視員工紀錄 ｜ 檢視-切換身份-更動紀錄-幫打請假卡
-    Route::get('/worker/record', 'AdminController@record');
+    
     Route::post('//worker/record', 'AdminController@record');
     */
 });

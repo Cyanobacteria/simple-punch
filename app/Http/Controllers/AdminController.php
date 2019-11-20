@@ -40,6 +40,31 @@ class AdminController extends Controller
         $month = array_unique($newAry);
         return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
     }
+    //調出員工清單
+
+    public function workerRecord(Request $request)
+    {
+        //逐一整理資料 ｜ 總時數 - 遲到-早退-請假 ｜ 狀態-時間-事由
+        //管理者檢視所有員工紀錄
+        dump($request->month);
+        //取出打卡紀錄
+        $records = Format::month($request->month);
+        //取月份
+        $month = DB::table('punch_records as a')
+            ->select('a.created_at as date')
+            ->get();
+
+        $newAry = [];
+        //格式化-月份
+        foreach ($month as $k => $v) {
+            $date = new \DateTime($v->date);
+            $newAry[] = $date->format("Y-m");
+        }
+        //取唯一值
+        $month = array_unique($newAry);
+        return view('readWorks', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
+    }
+
 
 
 
