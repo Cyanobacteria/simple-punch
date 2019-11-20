@@ -19,7 +19,7 @@
                 @endif
                 <div class="row">
                     <div class="col-md-5">
-                        當前用戶 : {{Auth::user()->name}}
+                        你好！ 管理者 : {{Auth::user()->name}}
                     </div>
 
                     <div class="col-md-6">
