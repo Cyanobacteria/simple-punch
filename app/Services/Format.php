@@ -14,10 +14,14 @@ class Format
     {
         $shiftAry = [];
         $actionAry = [];
+
+        //收集班別ID  &  班類型ID
         foreach ($todayPunchRecord as $k => $v) {
             $shiftAry[] = $v->shiftId;
             $actionAry[] = $v->actionId;
         }
+        //  dump($shiftAry);
+        //取不重複值
         $shiftAry = array_unique($shiftAry);
         $actionAry = array_unique($actionAry);
         $shiftIdAry = [];
@@ -26,6 +30,7 @@ class Format
         foreach ($shiftAry as $k => $v) {
             $shiftIdAry[$v] = [];
         }
+        //dump($shiftIdAry);
         foreach ($actionAry as $k => $v) {
             $actionIdAry[$v] = [];
         }
@@ -75,10 +80,8 @@ class Format
                     $currentCompare = $v;
                 }
             }
-
         }
         return self::indexfilterAndFlat($shiftIdAry);
-
     }
 
     private static function indexfilterAndFlat($shiftIdAry)
@@ -100,8 +103,8 @@ class Format
 
     public static function index()
     {
-
         $today = date('Y-m-d');
+        //取得使用者 - 當天所有紀錄
         $todayPunchRecord = UserPunchRecords::getByTimeRange([
             'start' => $today . ' 00-00-00',
             'end' => $today . ' 23-59-59',
@@ -114,15 +117,17 @@ class Format
         $records = (!isset($shiftIdAry)) ? null : $shiftIdAry;
         //dd($records);
         return $records;
-
     }
 
     public static function month($params)
     {
         $month = $params;
+        //設定區間
         $start = $month . '-1 00:00:00';
         $end = $month . '-31 23:59:59';
-//        dd($params);
+        //dd($params);
+
+        //調用資料-使用自訂sql 語法
         $monthPunchRecord = UserPunchRecords::getByTimeRange([
             'start' => $start,
             'end' => $end,
@@ -142,13 +147,45 @@ class Format
                 $shiftIdAry = self::indexTreeStructure($v);
                 $v = $shiftIdAry;
             }
+        }
+        dd($daysAry);
+        return $daysAry;
+    }
 
+    //與上方相同-差亦是可以指定userId
+    public static function monthByUserId($params)
+    {
+
+        $month = $params['month'];
+        $userId = $params['userId'];
+        //設定區間
+        $start = $month . '-1 00:00:00';
+        $end = $month . '-31 23:59:59';
+
+
+        //調用資料-使用自訂sql 語法
+        $monthPunchRecord = UserPunchRecords::getByTimeRangeAndUserId([
+            'start' => $start,
+            'end' => $end,
+            'userId' => $userId
+        ]);
+        $daysAry = [];
+        foreach ($monthPunchRecord as $k => &$v) {
+            $ori = new \DateTime($v->time);
+            $day = $ori->format('Y-m-d');
+            $daysAry[$day] = [];
+            $v->day = $day;
+        }
+        foreach ($monthPunchRecord as $k => $v) {
+            $daysAry[$v->day][] = $v;
+        }
+        foreach ($daysAry as $k => &$v) {
+            if (count($v) > 0) {
+                $shiftIdAry = self::indexTreeStructure($v);
+                $v = $shiftIdAry;
+            }
         }
 
         return $daysAry;
-
-
     }
-
-
 }

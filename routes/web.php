@@ -33,6 +33,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/records', 'AdminController@record');
     //檢視員工紀錄 ｜ 檢視-切換身份-更動紀錄-幫打請假卡
     Route::get('/worker/record', 'AdminController@workerRecord');
+    Route::post('/worker/record', 'AdminController@workerRecord')->name('workerRecord.post');
 
     //  Route::post('/records', 'AdminController@record');
 

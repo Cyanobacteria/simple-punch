@@ -218,7 +218,32 @@ class punchRecords extends Seeder
                     'remark' => '',
                     'created_at' => '2019-11-02 19:01:00',
                     'updated_at' => '2019-11-02 19:01:00',
-                ]
+                ],
+                //------新增 admin 1 第二天資料
+                [
+                    'id' => 17,
+                    'user_id' => 1,
+                    'shift_type_id' => 1,
+                    'punch_type_id' => 1,
+                    'punch_user_id' => 1,
+                    'punch_result_id' => 3,
+                    'status' => 1,
+                    'remark' => '',
+                    'created_at' => '2019-09-02 08:30:00',
+                    'updated_at' => '2019-09-02 08:30:00',
+                ],
+                [
+                    'id' => 18,
+                    'user_id' => 1,
+                    'shift_type_id' => 1,
+                    'punch_type_id' => 2,
+                    'punch_user_id' => 1,
+                    'punch_result_id' => 3,
+                    'status' => 1,
+                    'remark' => '',
+                    'created_at' => '2019-09-02 19:01:00',
+                    'updated_at' => '2019-09-02 19:01:00',
+                ],
 
 
             ]

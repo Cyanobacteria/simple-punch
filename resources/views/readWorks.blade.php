@@ -24,7 +24,7 @@
 
                 <script>ShowTime()</script>
                 <!-- [ 月份選擇-下拉選單]-->
-                <form method="post" action="{{ route('read.post') }}">
+                <form method="post" action="{{ route('workerRecord.post') }}">
                     @csrf
                     <br>
                     <div class="input-group input-group-sm mb-3">
