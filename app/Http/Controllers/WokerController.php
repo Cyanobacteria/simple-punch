@@ -110,10 +110,25 @@ class WokerController extends Controller
     }
 
     //取得使用者-月份紀錄
-    public function getUserRecords()
+    public function getUserRecords(Request $request)
     {
-        //使用 get-query - 取得月份
+        dump($request->month);
+        $records = Format::month($request->month);
 
+        $month = DB::table('punch_records as a')
+            ->select('a.created_at as date')
+            ->get();
+
+        $newAry = [];
+
+        foreach ($month as $k => $v) {
+            $date = new \DateTime($v->date);
+            $newAry[] = $date->format("Y-m");
+        }
+
+        $month = array_unique($newAry);
+
+        return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
     }
 
 

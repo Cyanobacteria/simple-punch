@@ -38,6 +38,7 @@ class HomeController extends Controller
     public function read(Request $request)
     {
         dump($request->month);
+
         $records = Format::month($request->month);
 
         $month = DB::table('punch_records as a')
@@ -52,6 +53,11 @@ class HomeController extends Controller
         }
 
         $month = array_unique($newAry);
+
+
+
+
+
 
         return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
     }
