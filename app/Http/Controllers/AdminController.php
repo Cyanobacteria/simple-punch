@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 //service
 use App\Services\Format;
+//Facades
+use Illuminate\Support\Facades\DB;
 
 
 class AdminController extends Controller
@@ -17,6 +19,31 @@ class AdminController extends Controller
         $records = Format::index();
         return view('adminHome', ['now' => now(), 'records' => $records, 'message' => []]);
     }
+    //j管理者檢視自己的打卡紀錄
+    public function record(Request $request)
+    {
+        dump($request->month);
+        //取出打卡紀錄
+        $records = Format::month($request->month);
+        //取月份
+        $month = DB::table('punch_records as a')
+            ->select('a.created_at as date')
+            ->get();
+
+        $newAry = [];
+        //格式化-月份
+        foreach ($month as $k => $v) {
+            $date = new \DateTime($v->date);
+            $newAry[] = $date->format("Y-m");
+        }
+        //取唯一值
+        $month = array_unique($newAry);
+        return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
+    }
+
+
+
+
     //檢視 -管理者打卡
     public function punch()
     {

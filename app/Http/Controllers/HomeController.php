@@ -38,27 +38,21 @@ class HomeController extends Controller
     public function read(Request $request)
     {
         dump($request->month);
-
+        //取出打卡紀錄
         $records = Format::month($request->month);
-
+        //取月份
         $month = DB::table('punch_records as a')
             ->select('a.created_at as date')
             ->get();
 
         $newAry = [];
-
+        //格式化-月份
         foreach ($month as $k => $v) {
             $date = new \DateTime($v->date);
             $newAry[] = $date->format("Y-m");
         }
-
+        //取唯一值
         $month = array_unique($newAry);
-
-
-
-
-
-
         return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
     }
 }
