@@ -125,6 +125,6 @@ class __TwigTemplate_66a69e47d6b58221f314dec9d1453cd356df00a3e01b812459c774deb1f
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/structure/add_column.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/structure/add_column.twig");
+        return new Twig_Source("", "table/structure/add_column.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/structure/add_column.twig");
     }
 }

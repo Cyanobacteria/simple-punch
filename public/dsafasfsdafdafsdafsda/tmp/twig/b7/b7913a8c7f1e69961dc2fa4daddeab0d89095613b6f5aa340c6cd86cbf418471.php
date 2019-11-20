@@ -220,6 +220,6 @@ class __TwigTemplate_2a180b957b8dd5f571c1c12c63550216f2c05e6f8df70029598d974c0c6
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/structure/display_table_stats.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/structure/display_table_stats.twig");
+        return new Twig_Source("", "table/structure/display_table_stats.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/structure/display_table_stats.twig");
     }
 }

@@ -61,6 +61,6 @@ class __TwigTemplate_288eaddfdc6d53fa13e43eb9d562d3eff084e7af09f7ad3215183944a71
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/structure/move_columns_dialog.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/structure/move_columns_dialog.twig");
+        return new Twig_Source("", "table/structure/move_columns_dialog.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/structure/move_columns_dialog.twig");
     }
 }

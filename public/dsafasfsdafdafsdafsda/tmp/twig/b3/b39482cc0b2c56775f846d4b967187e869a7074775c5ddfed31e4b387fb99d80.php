@@ -60,6 +60,6 @@ class __TwigTemplate_23a98f98d1bacd2be6187e69174c247b1ec1d91662456beb045376c1488
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/secondary_tabs.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/secondary_tabs.twig");
+        return new Twig_Source("", "table/secondary_tabs.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/secondary_tabs.twig");
     }
 }

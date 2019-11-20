@@ -102,6 +102,6 @@ class __TwigTemplate_39d04d6579076e338fd2d88d760cc326b5bd842e768b7b739e058439f36
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "table/structure/action_row_in_structure_table.twig", "/var/www/html/app/public3/dsafasfsdafdafsdafsda/templates/table/structure/action_row_in_structure_table.twig");
+        return new Twig_Source("", "table/structure/action_row_in_structure_table.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/table/structure/action_row_in_structure_table.twig");
     }
 }
