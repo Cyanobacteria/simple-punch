@@ -40,6 +40,8 @@
                     <button class="btn btn-danger align-content-sm-end" type="submit">查詢</button>
                 </form>
                 <!-- [ 資料呈現區 ]-->
+                @if( $workersPunchData!=null)
+                @foreach($workersPunchData as $workId=>$workMonthData)
                 <table class="table">
                     <thead class="thead-dark">
                       <tr>
@@ -52,68 +54,76 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th scope="row">water</th>
-                        <td>20</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>3</td>
+                      <th scope="row">{{$workMonthData['name']}}</th>
+                      <td>{{$workMonthData['hours']}}</td>
+                        <td>{{$workMonthData['late']['count']}}</td>
+                        <td>{{$workMonthData['leaveEarly']['count']}}</td>
+                        <td>{{$workMonthData['leave']['count']}}</td>
                       </tr>
                     </tbody>
                   </table>
+                  <!-- 詳細資料區-->
                   <table class="table">
                     <thead class="thead-light">
-                      <tr>
+                        <tr>
                         <th scope="col-3">狀態</th>
                         <th scope="col-3">日期</th>
                         <th scope="col-6">事由</th>
                       </tr>
-                    </thead>
+                     </thead>
                     <tbody>
+                        <!--遲到 -->
+                        @if($workMonthData['late']['data'] !=null )
+                            @foreach($workMonthData['late']['data'] as $lateData)
                       <tr>
                         <th scope="row">遲到</th>
-                        <td>2019-11-01</td>
-                        <td>睡過頭</td>
-
+                        <td>{{$lateData->day}}</td>
+                      <td>{{$lateData->remark}}</td>
                       </tr>
+                      @endforeach
+                      @endif
+                      <!--早退-->
+                      @if($workMonthData['leaveEarly']['data'] !=null )
+                      @foreach($workMonthData['leaveEarly']['data'] as $leaveEarlyData)
+                <tr>
+                  <th scope="row">早退
+                  </th>
+                  <td>{{$leaveEarlyData->day}}</td>
+                <td>{{$leaveEarlyData->remark}}</td>
+                </tr>
+                @endforeach
+                @endif
+                      <!--請假-->
+                      @if($workMonthData['leave']['data'] !=null )
+                      @foreach($workMonthData['leave']['data'] as $leaveData)
+                <tr>
+                  <th scope="row">請假</th>
+                  <td>{{$leaveData->day}}</td>
+                <td>{{$leaveData->remark}}</td>
+                </tr>
+                @endforeach
+                @endif
+                      <!--異常-->
+                      @if($workMonthData['other']['data'] !=null )
+                      @foreach($workMonthData['other']['data'] as $otherData)
+                <tr>
+                  <th scope="row" class="text-danger">異常</th>
+                  <td>{{$otherData->day}}</td>
+                  @if($otherData->actionId==1)
+                <td>下班未打卡</td>
+                @elseif($otherData->actionId==2)
+                <td>上班未打卡</td>
+                @endif
+                </tr>
+                @endforeach
+                @endif
                     </tbody>
                   </table>
+                  @endforeach
+                  @endif
 
 
-
-                @if( $records!=null)
-                    <h2 class="text-center" style="margin-top: 30px;">今日打卡紀錄</h2>
-                    <table class="table" style="margin-top: 10px;">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>班別</th>
-                            <th>動作</th>
-                            <th>結果</th>
-                            <th>時間</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        @foreach($records as $month=>$days)
-                            <tr>
-                                <td class="text-center" colspan="4">{{$month}}</td>
-                            </tr>
-                            @foreach($days as $day)
-                                <tr>
-                                    <td>{{$day->shift}}</td>
-                                    <td>{{$day->action}}</td>
-                                    @if($day->result<>'正常')
-                                        <td class="table-danger">{{$day->result}}</td>
-                                    @else
-                                        <td class="">{{$day->result}}</td>
-                                    @endif
-                                    <td>{{$day->time}}</td>
-                                </tr>
-                            @endforeach
-                        @endforeach
-
-                        </tbody>
-                    </table>
-                @endif
+              
             
             </div>
         </div>
