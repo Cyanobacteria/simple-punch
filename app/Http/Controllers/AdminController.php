@@ -6,15 +6,35 @@ use Illuminate\Http\Request;
 //model
 //user model
 use App\User;
+use App\PunchRecord;
+use App\PunchRecordHistory;
 
 //service
 use App\Services\Format;
 //Facades
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+//repo
+use App\Repositories\UserPunchRecords;
 
 
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+
+
+        $userData = Auth::user();
+
+        if ($userData['isAmin'] == 1) {
+            return redirect('/home');
+        }
+        // $this->middleware('auth');
+    }
+
+
+
+
     //檢視 -管理者打卡頁面
     public function home()
     {
@@ -70,6 +90,8 @@ class AdminController extends Controller
             $workersPunchData[$workerId]['monthData'] = $records;
             //hours
             $workersPunchData[$workerId]['totalSecond'] = 0;
+            //workDay  實際工作日
+            $workersPunchData[$workerId]['workDay'] = 0;
             //shift 班表數
             $workersPunchData[$workerId]['shift']['allDay'] = 0;
             $workersPunchData[$workerId]['shift']['morning'] = 0;
@@ -91,6 +113,7 @@ class AdminController extends Controller
             foreach ($records as $date => $dailyData) {
                 //條件- 正常情況-當天必須有上下班打卡紀錄  
                 if (count($dailyData) == 2) {
+                    $workersPunchData[$workerId]['workDay']++;
                     //1.計算全天班 / 早班 /午班  次數
                     switch ($dailyData[0]->shiftId) {
                         case '1': //早班
@@ -140,20 +163,6 @@ class AdminController extends Controller
         }
         dump($workersPunchData);
 
-        //3.1 計算總時數 ｜ 條件- 當天必須有上下班打卡紀錄   ｜ 轉換時間戳記計算差值-累加-轉換成小時（排除午休一小時）
-        //3. 計算總時數 / 遲到次數 /  早退次數  /  請假次數
-        //轉換時間戳記計算差值-累加-轉換成小時（排除午休一小時）
-
-        //3.1 計算總時數 ｜ 條件- 當天必須有上下班打卡紀錄   ｜ 轉換時間戳記計算差值-累加-轉換成小時（排除午休一小時）
-        //換算小時（計算總秒數  -  全天班次數 * 秒數） /60
-        //建立資料
-
-
-
-
-
-
-
 
 
         //4.取月份為一值-當作下拉選單
@@ -174,6 +183,43 @@ class AdminController extends Controller
         return view('readWorks', ['month' => $month, 'now' => now(), 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => []]);
     }
 
+
+    public function updatedRecord(Request $request)
+    {
+        // 取得更新值-建立更新物件
+        $punchRecordId = $request->{'punchid'};
+        $punchResult = $request->{'workpunchresult'};
+        $punchRemark =  $request->{'workpunchremark'};
+        $adminData = Auth::user();
+
+        if ($adminData->isAdmin == 1) {
+            //調出更動之record
+            $record = PunchRecord::where('id', $punchRecordId)
+                ->update(['punch_user_id' => $adminData->id, 'punch_result_id' => $punchResult, 'remark' => $punchRemark, 'updated_at' => now()]);
+
+            $updatedData = PunchRecord::where('id', $punchRecordId)->get()[0];
+            $punchHistoryData = array(
+                'id' => $updatedData->id,
+                'user_id' => $updatedData->user_id,
+                'shift_type_id' => $updatedData->shift_type_id,  //班別
+                'punch_type_id' => $updatedData->punch_type_id, //上班-下班-請假
+                'punch_user_id' => $updatedData->punch_user_id,
+                'punch_result_id' => $updatedData->punch_result_id, //打卡結果- 遲到-早退-正常
+                'status' => $updatedData->status,
+                'remark' => $updatedData->remark,
+                'created_at' => $updatedData->created_at,
+                'updated_at' => $updatedData->updated_at
+            );
+            //寫入DB- punchHistory - json 化 
+            PunchRecordHistory::create([
+                'punch_record_id' => $updatedData->id,
+                'raw_data' => json_encode((object) $punchHistoryData),
+                'updated_at' => now()
+            ]);
+        };
+
+        return redirect()->back();
+    }
 
 
 
