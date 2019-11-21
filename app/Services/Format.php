@@ -148,7 +148,7 @@ class Format
                 $v = $shiftIdAry;
             }
         }
-        dd($daysAry);
+
         return $daysAry;
     }
 

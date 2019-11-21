@@ -37,7 +37,7 @@ class HomeController extends Controller
 
     public function read(Request $request)
     {
-        dump($request->month);
+        //dump($request->month);
         //取出打卡紀錄
         $records = Format::month($request->month);
         //取月份

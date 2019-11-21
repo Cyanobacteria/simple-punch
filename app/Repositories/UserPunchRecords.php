@@ -9,6 +9,30 @@ use Illuminate\Support\Facades\DB;
 
 class UserPunchRecords
 {
+    public static function getByPK($params)
+    {
+        $id = $params['id'];
+        $userData = DB::table('punch_records AS a')
+            ->select(
+                [
+                    'a.id as id',
+                    'a.user_id as user_id',
+                    'a.shift_type_id as shift_type_id',
+                    'a.	punch_type_id as 	punch_type_id',
+                    'a.punch_user_id as punch_user_id',
+                    'a.	punch_result_id	 as 	punch_result_id	',
+                    'a.	status as 	status',
+                    'a.remark as remark',
+                    'a.created_at as created_at',
+                    'a.updated_at as updated_at',
+                ]
+            )->where('a.user_id', $id)
+            ->get();
+
+        return $userData;
+    }
+
+
     public static function getByTimeRange($params)
     {
 
@@ -47,6 +71,8 @@ class UserPunchRecords
         $todayPunchRecord = DB::table('punch_records AS a')
             ->select(
                 [ //a - punch_records   打卡紀錄 |    b-punch_types 上下班假 |  c-shift_types 班別
+                    'a.user_id as userId', // a - remark  打卡紀錄 打卡結果欄位
+                    'a.id as punchRecordId', // a - remark  打卡紀錄 打卡結果欄位
                     'a.punch_result_id as punchResultId', // a - remark  打卡紀錄 打卡結果欄位
                     'a.remark as remark', // a - remark  打卡紀錄 備註欄位
                     'a.created_at as time', // a - punch_records   打卡紀錄 建立時間
