@@ -55,22 +55,21 @@ class AdminController extends Controller
             $workerIdList[$user->id] = $user->name;
         }
 
-        //2.取出單一員工-指定月份-資料
-
         //2.1取出所有員工打卡紀錄
         $workersPunchData = [];
+        //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]] 
         foreach ($workerIdList as $workerId => $workerName) {
-            //建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]] 
+
+            $monthParams = ['month' => $request->month, 'userId' => $workerId];
+            //1.取出使用者該月份紀錄
+            $records = Format::monthByUserId($monthParams);
+            //2.初始化資料結構
             //name
             $workersPunchData[$workerId]['name'] = $workerName;
-
-            //設定參數
-            $monthParams = ['month' => $request->month, 'userId' => $workerId];
-            $records = Format::monthByUserId($monthParams);
             //monthData
             $workersPunchData[$workerId]['monthData'] = $records;
             //hours
-            $workersPunchData[$workerId]['hours'] = 0;
+            $workersPunchData[$workerId]['totalSecond'] = 0;
             //shift 班表數
             $workersPunchData[$workerId]['shift']['allDay'] = 0;
             $workersPunchData[$workerId]['shift']['morning'] = 0;
@@ -88,7 +87,7 @@ class AdminController extends Controller
             $workersPunchData[$workerId]['other']['count'] = 0;
             $workersPunchData[$workerId]['other']['data'] = [];
 
-
+            //3.格式化-使用者月份紀錄
             foreach ($records as $date => $dailyData) {
                 //條件- 正常情況-當天必須有上下班打卡紀錄  
                 if (count($dailyData) == 2) {
@@ -106,7 +105,7 @@ class AdminController extends Controller
                     }
 
                     //2.計算相差秒數 並累積
-                    $workersPunchData[$workerId]['hours'] = $workersPunchData[$workerId]['hours'] + (strtotime($dailyData[1]->time) - strtotime($dailyData[0]->time));
+                    $workersPunchData[$workerId]['totalSecond'] = $workersPunchData[$workerId]['totalSecond'] + (strtotime($dailyData[1]->time) - strtotime($dailyData[0]->time));
 
                     //3.1.計算遲到次數 ｜ 條件-檢查 monthData - index 0 -  result  == "遲到" ｜ 計算次數  且  將資料存到 遲到紀錄區
                     //3.2計算早退次數 ｜ 條件-檢查 monthData - index 0 -  result  == "早退"｜ 計算次數  且  將資料存到 早退紀錄區
@@ -124,7 +123,7 @@ class AdminController extends Controller
                 } else {
                     //請假 ＆ 異常值判斷
                     //3.2 計算請假次數 ｜ 條件-檢查 monthData - index 0 -  actionId  !== 1  &&  !== 2   ｜ 檢查 monthData - index 0 -  actionId  === 1  ||  === 2 - 則為異常資料 - 存到異常資料區  
-                    if ($dailyData[0] . actionId > 2 || $dailyData[1] . actionId > 2) {
+                    if ($dailyData[0]->actionId > 2) {
                         $workersPunchData[$workerId]['leave']['count']++;
                         $workersPunchData[$workerId]['leave']['data'][$date] = $dailyData[0] ? $dailyData[0] : $dailyData[1];
                     } else {
@@ -134,7 +133,13 @@ class AdminController extends Controller
                 }
             }
         }
-        dd($workersPunchData);
+        //3.計算使用者工作時數
+        foreach ($workersPunchData as $workId => $workerFormatData) {
+            $fullDayCount = $workerFormatData['shift']['allDay'];
+            $workersPunchData[$workId]['hours'] = round(($workerFormatData['totalSecond'] - 60 * 60 * $fullDayCount) / 3600);
+        }
+        dump($workersPunchData);
+
         //3.1 計算總時數 ｜ 條件- 當天必須有上下班打卡紀錄   ｜ 轉換時間戳記計算差值-累加-轉換成小時（排除午休一小時）
         //3. 計算總時數 / 遲到次數 /  早退次數  /  請假次數
         //轉換時間戳記計算差值-累加-轉換成小時（排除午休一小時）
@@ -166,7 +171,7 @@ class AdminController extends Controller
 
 
         //逐一整理資料 ｜ 總時數 - 遲到-早退-請假 ｜ 狀態-時間-事由
-        return view('readWorks', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
+        return view('readWorks', ['month' => $month, 'now' => now(), 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => []]);
     }
 
 
