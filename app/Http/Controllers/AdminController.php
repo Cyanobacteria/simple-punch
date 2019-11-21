@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 //model
 //user model
 use App\User;
+
 use App\PunchRecord;
 use App\PunchRecordHistory;
+use App\PunchType;
+use App\ShiftType;
 
 //service
 use App\Services\Format;
@@ -32,7 +35,25 @@ class AdminController extends Controller
         // $this->middleware('auth');
     }
 
+    private function insertRecord($params)
+    {
+        try {
+            $t = new PunchRecord;
+            $t->user_id = $params->user_id;
+            $t->shift_type_id  = $params->shift_type_id;
+            $t->punch_type_id  = $params->punch_type_id;
+            $t->punch_user_id  = $params->punch_user_id;
+            $t->punch_result_id = $params->punch_result_id;
+            $t->status = $params->status;
+            $t->remark = $params->remark;
+            $t->created_at = now();
 
+            $insertId = $t->save();
+        } catch (\Exception $e) {
+            return $e;
+        }
+        return $t;
+    }
 
 
     //檢視 -管理者打卡頁面
@@ -177,10 +198,13 @@ class AdminController extends Controller
         }
         //取唯一值
         $month = array_unique($newAry);
+        //5. 調出所有班別
+        $punchTypes = PunchType::whereBetween('id', array(3, 20))->get();
+        $shiftTypes = ShiftType::all();
 
 
         //逐一整理資料 ｜ 總時數 - 遲到-早退-請假 ｜ 狀態-時間-事由
-        return view('readWorks', ['month' => $month, 'now' => now(), 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => []]);
+        return view('readWorks', ['month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => []]);
     }
 
 
@@ -225,9 +249,38 @@ class AdminController extends Controller
 
 
     //檢視 -管理者打卡
-    public function punch()
+    public function punchLeave(Request $request)
     {
-        // 功能跟worker 重複 - 暫時不新增
+        // 取得更新值-建立更新物件
+        $userId = $request->{'user_id'};
+        $date = $request->{'date'};
+        $shiftTypes = $request->{'shift_type_id'};
+        $punchTypes = $request->{'punch_type_id'};
+        $punchRemark =  $request->{'remark'};
+        $adminData = Auth::user();
+
+        //punch record  建立新資料
+        $punchData = array(
+            'user_id' => $userId,
+            'shift_type_id' => $shiftTypes,  //班別
+            'punch_type_id' =>  $punchTypes, //上班-下班-請假
+            'punch_user_id' =>  $adminData->id,
+            'punch_result_id' => 3, //打卡結果- 遲到-早退-正常
+            'status' => 1,
+            'remark' => $punchRemark,
+            'created_at' => $date,
+            'updated_at' => now()
+        );
+
+        $result = $this->insertRecord((object) $punchData);
+
+        //寫入DB- punchHistory - json 化 
+        PunchRecordHistory::create([
+            'punch_record_id' => $result->id,
+            'raw_data' => json_encode((object) $punchData),
+            'updated_at' => now()
+        ]);
+        return redirect()->back();
     }
 
 

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -39,8 +40,16 @@
                         </select>
                     </div>
                     <button class="btn btn-danger align-content-sm-end" type="submit">查詢</button>
-                </form>
+                  
+                  
+<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModalCenter1">
+    代打請假
+  </button>
+  
 
+                </form>
+               
+              
                 <div id="workRecord">
 
                
@@ -222,6 +231,93 @@
           </div>
         </div>
       </div>
+       <!-- Modal - 管理者代為打卡-->
+  <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">管理者代打請假卡</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="{{ route('punchLeave.post') }}" method="post">
+          <div class="modal-body">
+            
+              @csrf
+             <!-- 員工姓名 -->
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">員工姓名</span>
+              </div>
+             <select class="form-control" name="user_id" id="">
+               <option value="" selected disabled> 請選擇</option>
+               @foreach($workers as $worker )
+             <option value="{{$worker ->id}}">{{$worker ->name}}</option>
+             @endforeach
+             </select>
+            
+              </div>
+              <!-- 日期-->
+              <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">日期</span>
+                  </div>
+                  <input type="date"  class="form-control"  name='date'>
+                   
+                </div>  
+              <!-- 班別 -->
+                <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">班別</span>
+                  </div>
+                  <select class="form-control" name="shift_type_id" id="">
+                      <option value="" selected disabled> 請選擇</option>
+                     @foreach($shiftTypes as $shiftType)
+                  <option value="{{$shiftType->id}}">{{$shiftType->name}}</option>
+                  @endforeach
+                </select>
+                   
+                </div>
+                  <!-- 假別 -->
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">假別</span>
+                    </div>
+                    <select class="form-control" name="punch_type_id" id="">
+                        <option value="" selected disabled> 請選擇</option>
+                        @foreach($punchTypes  as $punchType)
+                    <option value="{{$punchType->id}}">{{$punchType->name}}</option>
+                    @endforeach
+                      </select>
+                     
+                  </div>
+                    <!-- 備註 -->
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
+                    </div>
+                    <input type="text" name="remark" id=""  class="form-control" >
+                     
+                  </div>
+                
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary">送出</button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
 
 <script>
     let NowDate = new Date('{{$now}}');
