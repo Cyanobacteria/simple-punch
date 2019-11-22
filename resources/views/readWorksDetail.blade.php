@@ -13,6 +13,20 @@
                         {{--                            @endforeach--}}
                     </div>
                 @endif
+                @if( \Session::has('message') )
+                    <div class="alert alert-danger">
+                        {{--                            @foreach($message as $m)--}}
+                        <strong>{!! \Session::get('message') !!}</strong>
+                        {{--                            @endforeach--}}
+                    </div>
+                @endif
+                @if( \Session::has('messageSuccess') )
+                <div class="alert alert-success">
+                    {{--                            @foreach($message as $m)--}}
+                    <strong>{!! \Session::get('messageSuccess') !!}</strong>
+                    {{--                            @endforeach--}}
+                </div>
+            @endif
                 <div class="row">
                     <div class="col-md-5">
                         當前用戶 : {{Auth::user()->name}}
@@ -107,7 +121,7 @@
                         @foreach($dayData as $data)
                       <tr>
                       <th scope="row"> {{$data->time}}</th>
-                        <td>{{$data->result}}</td>
+                      <td>{{$data->result}}</td>
                       <td>{{$data->shift}}</td>
                       <td>{{$data->remark}}</td>
                       <td> 

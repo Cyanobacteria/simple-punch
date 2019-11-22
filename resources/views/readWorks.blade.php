@@ -13,6 +13,20 @@
                         {{--                            @endforeach--}}
                     </div>
                 @endif
+                @if( \Session::has('message') )
+                <div class="alert alert-danger">
+                    {{--                            @foreach($message as $m)--}}
+                    <strong>{!! \Session::get('message') !!}</strong>
+                    {{--                            @endforeach--}}
+                </div>
+            @endif
+            @if( \Session::has('messageSuccess') )
+            <div class="alert alert-success">
+                {{--                            @foreach($message as $m)--}}
+                <strong>{!! \Session::get('messageSuccess') !!}</strong>
+                {{--                            @endforeach--}}
+            </div>
+        @endif
                 <div class="row">
                     <div class="col-md-5">
                         當前用戶 : {{Auth::user()->name}}
@@ -338,4 +352,4 @@
         setTimeout('ShowTime()', 1000);
     }
 </script>
-<script src="/js/workerReocrd.js"></script>
+<script src="/js/workerReocrd1.js"></script>
