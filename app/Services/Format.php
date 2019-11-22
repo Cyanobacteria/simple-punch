@@ -55,6 +55,7 @@ class Format
             $stE = '早退';
             $stL = '遲到';
             $stN = '正常';
+
             switch ($actionType) {
                 case '1':
                     $v->result = ($time < $start) ? $stN : $stL;
@@ -64,7 +65,7 @@ class Format
                     $v->result = ($time < $end) ? $stE : $stN;
                     break;
                 case '3':
-
+                    $v->result = $stN;
                     break;
             }
 
@@ -169,6 +170,7 @@ class Format
             'end' => $end,
             'userId' => $userId
         ]);
+
         $daysAry = [];
         foreach ($monthPunchRecord as $k => &$v) {
             $ori = new \DateTime($v->time);

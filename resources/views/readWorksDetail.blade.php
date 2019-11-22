@@ -13,6 +13,20 @@
                         {{--                            @endforeach--}}
                     </div>
                 @endif
+                @if( \Session::has('message') )
+                    <div class="alert alert-danger">
+                        {{--                            @foreach($message as $m)--}}
+                        <strong>{!! \Session::get('message') !!}</strong>
+                        {{--                            @endforeach--}}
+                    </div>
+                @endif
+                @if( \Session::has('messageSuccess') )
+                <div class="alert alert-success">
+                    {{--                            @foreach($message as $m)--}}
+                    <strong>{!! \Session::get('messageSuccess') !!}</strong>
+                    {{--                            @endforeach--}}
+                </div>
+            @endif
                 <div class="row">
                     <div class="col-md-5">
                         當前用戶 : {{Auth::user()->name}}
@@ -107,7 +121,7 @@
                         @foreach($dayData as $data)
                       <tr>
                       <th scope="row"> {{$data->time}}</th>
-                        <td>{{$data->result}}</td>
+                      <td>{{$data->result}}</td>
                       <td>{{$data->shift}}</td>
                       <td>{{$data->remark}}</td>
                       <td> 
@@ -169,21 +183,20 @@
                             <!-- 打卡結果 -->
                     <div class="input-group input-group-sm mb-3">
                             <div class="input-group-prepend">
-                              <span  class="input-group-text" id="inputGroup-sizing-sm">更新打卡結果</span>
+                              <span  class="input-group-text" id="inputGroup-sizing-sm">打卡結果</span>
                             </div>
 
-                         <select name="workpunchresult" id="workpunchresult" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                                <option value="" disabled selected >下拉選擇更動結果</option>  
-                            <option value="3" >正常</option> 
-                            <option value="1">遲到</option>
+                         <select name="workpunchresult" id="workpunchresult" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">  
+                              <option value="1">遲到</option>
                              <option value="2">早退</option>
+                             <option value="3" >正常</option> 
                          </select>
                         
                         </div>
                             <!-- 備註 -->
                     <div class="input-group input-group-sm mb-3">
                             <div class="input-group-prepend">
-                              <span class="input-group-text" id="inputGroup-sizing-sm">管理者備註</span>
+                              <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
                             </div>
                             <input type="text"  name="workpunchremark" id="workpunchremark" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                           </div>
@@ -203,7 +216,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">管理者代打請假卡</h5>
+            <h5 class="modal-title" id="exampleModalCenterTitle">管理者代打卡</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -230,9 +243,10 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">日期</span>
                   </div>
-                  <input type="date"  class="form-control"  name='date'>
+                  <input type="datetime-local"  class="form-control"  name='date'>
                    
-                </div>  
+                </div> 
+               
               <!-- 班別 -->
                 <div class="input-group input-group-sm mb-3">
                   <div class="input-group-prepend">
@@ -302,4 +316,4 @@
         setTimeout('ShowTime()', 1000);
     }
 </script>
-<script src="/js/workerReocrd.js"></script>
+<script src="/js/workerReocrd1.js"></script>

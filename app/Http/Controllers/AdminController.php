@@ -200,7 +200,7 @@ class AdminController extends Controller
         //取唯一值
         $month = array_unique($newAry);
         //5. 調出所有班別
-        $punchTypes = PunchType::whereBetween('id', array(3, 20))->get();
+        $punchTypes = PunchType::all();
         $shiftTypes = ShiftType::all();
 
 
@@ -232,13 +232,21 @@ class AdminController extends Controller
         //班別-清單 （ 早午全天班）
         $shiftTypes = ShiftType::all();
         //班狀態-清單（上下班-請假）
-        $punchTypes = PunchType::whereBetween('id', array(3, 20))->get();
+        $punchTypes = PunchType::all();
         //打卡結果
         $punchResults = PunchResult::all();
 
-        //POST - 接受 指定 使用者 調出當月資料
-        if ($request->{'userId'}) {
+        //POST - 接受 指定 使用者 調出當月資料===========================
+        if ($request->{'userId'} ||  $request->month) {
+            if ($request->{'userId'} == null) {
+                return redirect()->back()->with('message', '管理者必須輸入使用者身份！');
+            };
+            if ($request->month == null) {
+                return redirect()->back()->with('message', '管理者必須輸入月份！');
+            };
             $userId = $request->{'userId'};
+
+
             $postUserData = User::where('id', $userId)->get();
             $workerIdList[$userId] =  $postUserData[0]->name;
             //2.1取出所有員工打卡紀錄
@@ -249,6 +257,7 @@ class AdminController extends Controller
                 $monthParams = ['month' => $request->month, 'userId' => $workerId];
                 //1.取出使用者該月份紀錄
                 $records = Format::monthByUserId($monthParams);
+
                 //2.初始化資料結構
                 //name
                 $workersPunchData[$workerId]['name'] = $workerName;
@@ -328,6 +337,7 @@ class AdminController extends Controller
                 $workersPunchData[$workId]['hours'] = round(($workerFormatData['totalSecond'] - 60 * 60 * $fullDayCount) / 3600);
             }
             dump($workersPunchData);
+            //dd($workersPunchData);
             return view(
                 'readWorksDetail',
                 [
@@ -368,6 +378,11 @@ class AdminController extends Controller
         $punchResult = $request->{'workpunchresult'};
         $punchRemark =  $request->{'workpunchremark'};
         $adminData = Auth::user();
+        // dd($punchRemark == null);
+        if ($punchRemark == null) {
+            return redirect()->back()->with('message', '管理者必須輸入備註！');
+        }
+
 
         if ($adminData->isAdmin == 1) {
             //調出更動之record
@@ -395,7 +410,7 @@ class AdminController extends Controller
             ]);
         };
 
-        return redirect()->back();
+        return redirect()->back()->with('messageSuccess', '管理者成功更新打卡紀錄！');
     }
 
 
@@ -411,6 +426,10 @@ class AdminController extends Controller
         $punchTypes = $request->{'punch_type_id'};
         $punchRemark =  $request->{'remark'};
         $adminData = Auth::user();
+        if ($punchRemark == null) {
+            return redirect()->back()->with('message', '管理者必須輸入備註！');
+        }
+
 
         //punch record  建立新資料
         $punchData = array(
@@ -422,9 +441,9 @@ class AdminController extends Controller
             'status' => 1,
             'remark' => $punchRemark,
             'created_at' => $date,
-            'updated_at' => now()
+            'updated_at' => now()->toDateTimeString('Y-m-d')
         );
-
+        //dd($punchData);
         $result = $this->insertRecord((object) $punchData);
 
         //寫入DB- punchHistory - json 化 
@@ -433,7 +452,7 @@ class AdminController extends Controller
             'raw_data' => json_encode((object) $punchData),
             'updated_at' => now()
         ]);
-        return redirect()->back();
+        return redirect()->back()->with('messageSuccess', '管理者成功幫打卡！');
     }
 
 
