@@ -24,17 +24,14 @@ use App\Repositories\UserPunchRecords;
 
 class AdminController extends Controller
 {
+
+
     public function __construct()
     {
-
-
-        $userData = Auth::user();
-
-        if ($userData['isAmin'] == 1) {
-            return redirect('/home');
-        }
-        // $this->middleware('auth');
+        $this->middleware('auth');
+        // dump(Auth::user());
     }
+
 
     private function insertRecord($params)
     {
@@ -60,6 +57,9 @@ class AdminController extends Controller
     //檢視 -管理者打卡頁面
     public function home()
     {
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
         //
         $records = Format::index();
         return view('adminHome', ['now' => now(), 'records' => $records, 'message' => []]);
@@ -67,7 +67,9 @@ class AdminController extends Controller
     //j管理者檢視自己的打卡紀錄
     public function record(Request $request)
     {
-        dump($request->month);
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
         //取出打卡紀錄
         $records = Format::month($request->month);
         //取月份
@@ -89,6 +91,13 @@ class AdminController extends Controller
     //管理者檢視所有員工紀錄
     public function workerRecord(Request $request)
     {
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
+        // dump(Auth::user()->isAdmin);
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
 
         //1.調出員工清單    - user table  - isAdmim ==0
         $workerIdList = [];
@@ -183,7 +192,7 @@ class AdminController extends Controller
             $fullDayCount = $workerFormatData['shift']['allDay'];
             $workersPunchData[$workId]['hours'] = round(($workerFormatData['totalSecond'] - 60 * 60 * $fullDayCount) / 3600);
         }
-        dump($workersPunchData);
+        //dump($workersPunchData);
 
 
 
@@ -208,10 +217,13 @@ class AdminController extends Controller
         return view('readWorks', ['month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => []]);
     }
 
+
     //管理者檢視單一員工詳細紀錄 workerRecordDetail
     public function workerRecordDetail(Request $request)
     {
-
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
 
         //1.整理預設資料（員工清單  /  所有月份  / 班別 /  上下班-假別  / 所有打卡結果 ）
         //調出員工清單    - user table  - isAdmim ==0
@@ -373,12 +385,16 @@ class AdminController extends Controller
 
     public function updatedRecord(Request $request)
     {
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
         // 取得更新值-建立更新物件
         $punchRecordId = $request->{'punchid'};
         $punchResult = $request->{'workpunchresult'};
         $punchRemark =  $request->{'workpunchremark'};
         $adminData = Auth::user();
-        // dd($punchRemark == null);
+
+        dd($adminData);
         if ($punchRemark == null) {
             return redirect()->back()->with('message', '管理者必須輸入備註！');
         }
@@ -419,6 +435,9 @@ class AdminController extends Controller
     //檢視 -管理者打卡
     public function punchLeave(Request $request)
     {
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
         // 取得更新值-建立更新物件
         $userId = $request->{'user_id'};
         $date = $request->{'date'};

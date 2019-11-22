@@ -25,8 +25,12 @@ Route::post('/read', 'HomeController@read')->name('read.post');
 Route::post('/work', 'WokerController@store')->name('Worker.store');
 //--------------
 
+
 //[管理者路由群組]
 Route::group(['prefix' => 'admin'], function () {
+
+
+
     //檢視員工紀錄 ｜ 檢視-切換身份-更動紀錄-幫打請假卡
     Route::get('/worker/record', 'AdminController@workerRecord')->name('workerRecord.get');
     Route::post('/worker/record', 'AdminController@workerRecord')->name('workerRecord.post');
