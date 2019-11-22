@@ -200,7 +200,7 @@ class AdminController extends Controller
         //取唯一值
         $month = array_unique($newAry);
         //5. 調出所有班別
-        $punchTypes = PunchType::whereBetween('id', array(3, 20))->get();
+        $punchTypes = PunchType::all();
         $shiftTypes = ShiftType::all();
 
 
@@ -232,11 +232,11 @@ class AdminController extends Controller
         //班別-清單 （ 早午全天班）
         $shiftTypes = ShiftType::all();
         //班狀態-清單（上下班-請假）
-        $punchTypes = PunchType::whereBetween('id', array(3, 20))->get();
+        $punchTypes = PunchType::all();
         //打卡結果
         $punchResults = PunchResult::all();
 
-        //POST - 接受 指定 使用者 調出當月資料
+        //POST - 接受 指定 使用者 調出當月資料===========================
         if ($request->{'userId'}) {
             $userId = $request->{'userId'};
             $postUserData = User::where('id', $userId)->get();
