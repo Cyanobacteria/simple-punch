@@ -11,6 +11,7 @@ use App\PunchRecord;
 use App\PunchRecordHistory;
 use App\PunchType;
 use App\ShiftType;
+use App\PunchResult;
 
 //service
 use App\Services\Format;
@@ -207,6 +208,158 @@ class AdminController extends Controller
         return view('readWorks', ['month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => []]);
     }
 
+    //管理者檢視單一員工詳細紀錄 workerRecordDetail
+    public function workerRecordDetail(Request $request)
+    {
+
+
+        //1.整理預設資料（員工清單  /  所有月份  / 班別 /  上下班-假別  / 所有打卡結果 ）
+        //調出員工清單    - user table  - isAdmim ==0
+        $workerIdList = [];
+        $workers = User::where('isAdmin', 0)->get();
+
+        //月份清單-當作下拉選單
+        $month = DB::table('punch_records as a')
+            ->select('a.created_at as date')
+            ->get();
+        $newAry = [];
+        foreach ($month as $k => $v) { //格式化-月份
+            $date = new \DateTime($v->date);
+            $newAry[] = $date->format("Y-m");
+        }
+        $month = array_unique($newAry); //取唯一值
+
+        //班別-清單 （ 早午全天班）
+        $shiftTypes = ShiftType::all();
+        //班狀態-清單（上下班-請假）
+        $punchTypes = PunchType::whereBetween('id', array(3, 20))->get();
+        //打卡結果
+        $punchResults = PunchResult::all();
+
+        //POST - 接受 指定 使用者 調出當月資料
+        if ($request->{'userId'}) {
+            $userId = $request->{'userId'};
+            $postUserData = User::where('id', $userId)->get();
+            $workerIdList[$userId] =  $postUserData[0]->name;
+            //2.1取出所有員工打卡紀錄
+            $workersPunchData = [];
+            //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]] 
+            foreach ($workerIdList as $workerId => $workerName) {
+
+                $monthParams = ['month' => $request->month, 'userId' => $workerId];
+                //1.取出使用者該月份紀錄
+                $records = Format::monthByUserId($monthParams);
+                //2.初始化資料結構
+                //name
+                $workersPunchData[$workerId]['name'] = $workerName;
+                //monthData
+                $workersPunchData[$workerId]['monthData'] = $records;
+                //hours
+                $workersPunchData[$workerId]['totalSecond'] = 0;
+                //workDay  實際工作日
+                $workersPunchData[$workerId]['workDay'] = 0;
+                //shift 班表數
+                $workersPunchData[$workerId]['shift']['allDay'] = 0;
+                $workersPunchData[$workerId]['shift']['morning'] = 0;
+                $workersPunchData[$workerId]['shift']['afternoon'] = 0;
+                //late 遲到
+                $workersPunchData[$workerId]['late']['count'] = 0;
+                $workersPunchData[$workerId]['late']['data'] = [];
+                //leaveEarly 早退
+                $workersPunchData[$workerId]['leaveEarly']['count'] = 0;
+                $workersPunchData[$workerId]['leaveEarly']['data'] = [];
+                //leave 請假
+                $workersPunchData[$workerId]['leave']['count'] = 0;
+                $workersPunchData[$workerId]['leave']['data'] = [];
+                //other 異常值
+                $workersPunchData[$workerId]['other']['count'] = 0;
+                $workersPunchData[$workerId]['other']['data'] = [];
+
+                //3.格式化-使用者月份紀錄
+                foreach ($records as $date => $dailyData) {
+                    //條件- 正常情況-當天必須有上下班打卡紀錄  
+                    if (count($dailyData) == 2) {
+                        $workersPunchData[$workerId]['workDay']++;
+                        //1.計算全天班 / 早班 /午班  次數
+                        switch ($dailyData[0]->shiftId) {
+                            case '1': //早班
+                                $workersPunchData[$workerId]['shift']['morning']++;
+                                break;
+                            case '2': //午班
+                                $workersPunchData[$workerId]['shift']['afternoon']++;
+                                break;
+                            case '3': //全天班
+                                $workersPunchData[$workerId]['shift']['allDay']++;
+                                break;
+                        }
+
+                        //2.計算相差秒數 並累積
+                        $workersPunchData[$workerId]['totalSecond'] = $workersPunchData[$workerId]['totalSecond'] + (strtotime($dailyData[1]->time) - strtotime($dailyData[0]->time));
+
+                        //3.1.計算遲到次數 ｜ 條件-檢查 monthData - index 0 -  result  == "遲到" ｜ 計算次數  且  將資料存到 遲到紀錄區
+                        //3.2計算早退次數 ｜ 條件-檢查 monthData - index 0 -  result  == "早退"｜ 計算次數  且  將資料存到 早退紀錄區
+
+                        switch ($dailyData[0]->punchResultId) {
+                            case '1':
+                                $workersPunchData[$workerId]['late']['count']++;
+                                $workersPunchData[$workerId]['late']['data'][$date] = $dailyData[0] ? $dailyData[0] : $dailyData[1];
+                                break;
+                            case '2':
+                                $workersPunchData[$workerId]['leaveEarly']['count']++;
+                                $workersPunchData[$workerId]['leaveEarly']['data'][$date] = $dailyData[0] ? $dailyData[0] : $dailyData[1];
+                                break;
+                        }
+                    } else {
+                        //請假 ＆ 異常值判斷
+                        //3.2 計算請假次數 ｜ 條件-檢查 monthData - index 0 -  actionId  !== 1  &&  !== 2   ｜ 檢查 monthData - index 0 -  actionId  === 1  ||  === 2 - 則為異常資料 - 存到異常資料區  
+                        if ($dailyData[0]->actionId > 2) {
+                            $workersPunchData[$workerId]['leave']['count']++;
+                            $workersPunchData[$workerId]['leave']['data'][$date] = $dailyData[0] ? $dailyData[0] : $dailyData[1];
+                        } else {
+                            $workersPunchData[$workerId]['other']['count']++;
+                            $workersPunchData[$workerId]['other']['data'][$date] = $dailyData[0] ? $dailyData[0] : $dailyData[1];
+                        }
+                    }
+                }
+            }
+            //3.計算使用者工作時數
+            foreach ($workersPunchData as $workId => $workerFormatData) {
+                $fullDayCount = $workerFormatData['shift']['allDay'];
+                $workersPunchData[$workId]['hours'] = round(($workerFormatData['totalSecond'] - 60 * 60 * $fullDayCount) / 3600);
+            }
+            dump($workersPunchData);
+            return view(
+                'readWorksDetail',
+                [
+                    'month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers,  'message' => [],
+                    'workersPunchData' => $workersPunchData, 'records' => $records,
+                ]
+            );
+        }
+
+
+
+
+
+
+
+
+
+
+
+        //逐一整理資料 ｜ 總時數 - 遲到-早退-請假 ｜ 狀態-時間-事由
+        return view(
+            'readWorksDetail',
+            [
+                'month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers,  'message' => [],
+                'workersPunchData' => [], 'records' => [],
+            ]
+
+        );
+        //'workersPunchData' => $workersPunchData, 'records' => $records,
+    }
+
+
 
     public function updatedRecord(Request $request)
     {
@@ -282,6 +435,7 @@ class AdminController extends Controller
         ]);
         return redirect()->back();
     }
+
 
 
 

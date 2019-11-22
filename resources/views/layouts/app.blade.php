@@ -71,6 +71,7 @@
                                             <a class="dropdown-item"  href="{{ route('read.get') }}">每月紀錄</a>
                                             @if(Auth::user()->isAdmin ==1)
                                             <a class="dropdown-item"  href="{{ route('workerRecord.get') }}">員工紀錄</a>
+                                            <a class="dropdown-item"  href="{{ route('workerRecordDetail.get') }}">員工個人詳細紀錄</a>
                                             @endif
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
