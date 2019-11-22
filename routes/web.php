@@ -29,8 +29,10 @@ Route::post('/work', 'WokerController@store')->name('Worker.store');
 Route::group(['prefix' => 'admin'], function () {
     //檢視員工紀錄 ｜ 檢視-切換身份-更動紀錄-幫打請假卡
     Route::get('/worker/record', 'AdminController@workerRecord')->name('workerRecord.get');
-    Route::get('/worker/record/detail', 'AdminController@workerRecordDetail')->name('workerRecordDetail.get');
     Route::post('/worker/record', 'AdminController@workerRecord')->name('workerRecord.post');
+    //檢視單一員工詳細紀錄
+    Route::get('/worker/record/detail', 'AdminController@workerRecordDetail')->name('workerRecordDetail.get');
+    Route::post('/worker/record/detail', 'AdminController@workerRecordDetail')->name('workerRecordDetail.post');
     //更新員工打卡結果
     Route::post('/worker/record/update', 'AdminController@updatedRecord')->name('updatedRecord.post');
     //幫員工打請假卡
