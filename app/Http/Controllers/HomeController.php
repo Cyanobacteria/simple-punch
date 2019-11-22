@@ -53,6 +53,7 @@ class HomeController extends Controller
         }
         //取唯一值
         $month = array_unique($newAry);
+        // dd($records);
         return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
     }
 }

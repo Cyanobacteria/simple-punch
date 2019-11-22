@@ -54,8 +54,9 @@
 
                
                 <!-- [ 資料呈現區 ]-->
-                @if( $workersPunchData!=null)
+               
                 @foreach($workersPunchData as $workId=>$workMonthData)
+                @if(  !($workMonthData['monthData']==[]))
                 <table class="table">
                     <thead class="thead-dark">
                       <tr>
@@ -156,8 +157,9 @@
                 @endif
                     </tbody>
                   </table>
+                   @endif
                   @endforeach
-                  @endif
+                 
 
 
                 </div>
