@@ -63,6 +63,6 @@ class __TwigTemplate_e84513529243744482d1ecd5d6934bd84f9f7660408976904f3c2f982bf
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "columns_definitions/column_null.twig", "/var/www/html/app/project4/dsafasfsdafdafsdafsda/templates/columns_definitions/column_null.twig");
+        return new Twig_Source("", "columns_definitions/column_null.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/columns_definitions/column_null.twig");
     }
 }

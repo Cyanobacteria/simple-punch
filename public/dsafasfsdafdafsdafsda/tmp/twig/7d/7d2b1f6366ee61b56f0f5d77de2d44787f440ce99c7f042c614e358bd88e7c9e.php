@@ -122,6 +122,6 @@ $context["key"] != "")) && (strpos($this->getAttribute(            // line 8
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "columns_definitions/column_virtuality.twig", "/var/www/html/app/project4/dsafasfsdafdafsdafsda/templates/columns_definitions/column_virtuality.twig");
+        return new Twig_Source("", "columns_definitions/column_virtuality.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/columns_definitions/column_virtuality.twig");
     }
 }

@@ -466,6 +466,6 @@ $context["subpartition"], "engine", [], "array"), false, true);
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "columns_definitions/partitions.twig", "/var/www/html/app/project4/dsafasfsdafdafsdafsda/templates/columns_definitions/partitions.twig");
+        return new Twig_Source("", "columns_definitions/partitions.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/columns_definitions/partitions.twig");
     }
 }
