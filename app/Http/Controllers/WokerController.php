@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Mail;
 
 class WokerController extends Controller
 {
@@ -81,6 +82,17 @@ class WokerController extends Controller
             'status' => 1,
             'remark' => $request->{'remark'} ? $request->{'remark'} : '',
         );
+
+        $mail_binding = ['nickname' => 'water'];
+        //如果有遲到-寄信通知
+        if ($request->{'remark'}) {
+            Mail::send('emails', $mail_binding, function ($message) {
+                $message->from('azsx96385water@gmail.com', 'water');
+                $message->to('azsx96385@gmail.com');
+                $message->subject('water test');
+            });
+        }
+
 
 
         //寫入DB- punchRecord
