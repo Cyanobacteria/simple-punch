@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Mail;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WokerController extends Controller
 {
@@ -90,11 +92,14 @@ class WokerController extends Controller
                 $message->from('azsx96385water@gmail.com', 'water');
                 $message->to('azsx96385@gmail.com');
                 $message->subject('water test');
+                $message->attach(base_path('storage/app/users.xlsx'));
             });
         }
+        //excel 匯出
+        Excel::store(new UsersExport, 'users.xlsx');
 
-
-
+        header("location:http://127.0.0.1:8082/home?message={'ok'}");
+        /*
         //寫入DB- punchRecord
         $result = $this->insertRecord((object) $punchData);
 
@@ -118,8 +123,7 @@ class WokerController extends Controller
         //Redirect::to('home', ['message' => $this->message[0]]);
         //        die('ff');
         //redirect('/home?message='.$this->message[0]);
-
-
+*/
     }
 
     //取得使用者-月份紀錄
