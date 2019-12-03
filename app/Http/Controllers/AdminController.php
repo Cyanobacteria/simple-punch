@@ -348,7 +348,7 @@ class AdminController extends Controller
                 $fullDayCount = $workerFormatData['shift']['allDay'];
                 $workersPunchData[$workId]['hours'] = round(($workerFormatData['totalSecond'] - 60 * 60 * $fullDayCount) / 3600);
             }
-            dump($workersPunchData);
+            // dump($workersPunchData);
             //dd($workersPunchData);
             return view(
                 'readWorksDetail',
@@ -394,7 +394,7 @@ class AdminController extends Controller
         $punchRemark =  $request->{'workpunchremark'};
         $adminData = Auth::user();
 
-        dd($adminData);
+
         if ($punchRemark == null) {
             return redirect()->back()->with('message', '管理者必須輸入備註！');
         }

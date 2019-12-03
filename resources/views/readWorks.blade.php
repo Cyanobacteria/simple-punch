@@ -186,157 +186,147 @@
 <!-- Button trigger modal -->
 
       
-      <!-- Modal-編輯卡片元件 -->
-      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalCenterTitle">管理者更新</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            
-            <form action="{{ route('updatedRecord.post') }}" method="post">
-              @csrf
-            <div class="modal-body">
-                <input class="d-none" type="text" id="punchid" name="punchid">
-            <!-- 員工姓名 -->
-                    <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="inputGroup-sizing-sm">員工姓名</span>
-                            </div>
-                              <input  id="workname" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"  disabled>
-                          </div>
-                            <!-- 打卡時間 -->
-                    <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="inputGroup-sizing-sm">打卡時間</span>
-                            </div>
-                            <input  id="workpunchtime" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" disabled>
-                          </div>
-                            <!-- 打卡結果 -->
-                    <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                              <span  class="input-group-text" id="inputGroup-sizing-sm">打卡結果</span>
-                            </div>
-
-                         <select name="workpunchresult" id="workpunchresult" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                           
+           <!-- Modal-編輯卡片元件 -->
+           <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalCenterTitle">管理者更新</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                
+                <form action="{{ route('updatedRecord.post') }}" method="post">
+                  @csrf
+                <div class="modal-body">
+                    <input class="d-none" type="text" id="punchid" name="punchid">
+                <!-- 員工姓名 -->
+                        <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="inputGroup-sizing-sm">員工姓名</span>
+                                </div>
+                                  <input  id="workname" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"  disabled>
+                              </div>
+                                <!-- 打卡時間 -->
+                        <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="inputGroup-sizing-sm">打卡時間</span>
+                                </div>
+                                <input  id="workpunchtime" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" disabled>
+                              </div>
+                                <!-- 打卡結果 -->
+                        <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                  <span  class="input-group-text" id="inputGroup-sizing-sm">打卡結果</span>
+                                </div>
+    
+                             <select name="workpunchresult" id="workpunchresult" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">  
+                                  <option value="1">遲到</option>
+                                 <option value="2">早退</option>
+                                 <option value="3" >正常</option> 
+                             </select>
                             
-                            <option value="1">遲到</option>
-                             <option value="2">早退</option>
-                             <option value="3" >正常</option> 
-                         </select>
-                        
-                        </div>
-                            <!-- 備註 -->
-                    <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
                             </div>
-                            <input type="text"  name="workpunchremark" id="workpunchremark" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                          </div>
-                    
-            </div>
-        
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-              <button type="submit" class="btn btn-primary">確認修改</button>
-            </div>
-        </form>
-          </div>
-        </div>
-      </div>
-       <!-- Modal - 管理者代為打卡-->
-  <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">管理者代打卡</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form action="{{ route('punchLeave.post') }}" method="post">
-          <div class="modal-body">
+                                <!-- 備註 -->
+                        <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
+                                </div>
+                                <input type="text"  name="workpunchremark" id="workpunchremark" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                              </div>
+                        
+                </div>
             
-              @csrf
-             <!-- 員工姓名 -->
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-sm">員工姓名</span>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                  <button type="submit" class="btn btn-primary" id="recordupdatebtn">確認修改</button>
+                </div>
+            </form>
               </div>
-             <select class="form-control" name="user_id" id="">
-               <option value="" selected disabled> 請選擇</option>
-               @foreach($workers as $worker )
-             <option value="{{$worker ->id}}">{{$worker ->name}}</option>
-             @endforeach
-             </select>
-            
+            </div>
+          </div>
+           <!-- Modal - 管理者代為打卡-->
+      <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">管理者代打卡</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              <!-- 日期-->
-              <div class="input-group input-group-sm mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-sm">日期</span>
-                  </div>
-                  <input type="datetime-local"  class="form-control"  name='date'>
-                   
-                </div>  
-              <!-- 班別 -->
+              <form action="{{ route('punchLeave.post') }}" method="post">
+              <div class="modal-body">
+                
+                  @csrf
+                 <!-- 員工姓名 -->
                 <div class="input-group input-group-sm mb-3">
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-sm">班別</span>
+                    <span class="input-group-text" id="inputGroup-sizing-sm">員工姓名</span>
                   </div>
-                  <select class="form-control" name="shift_type_id" id="">
-                      <option value="" selected disabled> 請選擇</option>
-                     @foreach($shiftTypes as $shiftType)
-                  <option value="{{$shiftType->id}}">{{$shiftType->name}}</option>
-                  @endforeach
-                </select>
-                   
-                </div>
-                  <!-- 假別 -->
-                  <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">假別</span>
-                    </div>
-                    <select class="form-control" name="punch_type_id" id="">
-                        <option value="" selected disabled> 請選擇</option>
-                        @foreach($punchTypes  as $punchType)
-                    <option value="{{$punchType->id}}">{{$punchType->name}}</option>
-                    @endforeach
-                      </select>
-                     
-                  </div>
-                    <!-- 備註 -->
-                  <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
-                    </div>
-                    <input type="text" name="remark" id=""  class="form-control" >
-                     
-                  </div>
+                 <select class="form-control" name="user_id" id="punchworkername">
+                   <option value="" selected disabled> 請選擇</option>
+                   @foreach($workers as $worker )
+                 <option value="{{$worker ->id}}">{{$worker ->name}}</option>
+                 @endforeach
+                 </select>
                 
+                  </div>
+                  <!-- 日期-->
+                  <div class="input-group input-group-sm mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">日期</span>
+                      </div>
+                      <input type="datetime-local"  class="form-control"  name='date' id="punchdate">
+                       
+                    </div> 
+                   
+                  <!-- 班別 -->
+                    <div class="input-group input-group-sm mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">班別</span>
+                      </div>
+                      <select class="form-control" name="shift_type_id" id="punchtype">
+                          <option value="" selected disabled> 請選擇</option>
+                         @foreach($shiftTypes as $shiftType)
+                      <option value="{{$shiftType->id}}">{{$shiftType->name}}</option>
+                      @endforeach
+                    </select>
+                       
+                    </div>
+                      <!-- 假別 -->
+                      <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="inputGroup-sizing-sm">打卡動作</span>
+                        </div>
+                        <select class="form-control" name="punch_type_id" id="punchaction">
+                            <option value="" selected disabled> 請選擇</option>
+                            @foreach($punchTypes  as $punchType)
+                        <option value="{{$punchType->id}}">{{$punchType->name}}</option>
+                        @endforeach
+                          </select>
+                         
+                      </div>
+                        <!-- 備註 -->
+                      <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
+                        </div>
+                        <input type="text" name="remark" id="punchremark"  class="form-control" >
+                         
+                      </div>
+                    
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button id="adminpunch" type="submit" class="btn btn-primary">送出</button>
+              </div>
+            </form>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-            <button type="submit" class="btn btn-primary">送出</button>
-          </div>
-        </form>
         </div>
-      </div>
-    </div>
-
-
-
-
-
-
-
-
-
-<script>
+    <script>
     let NowDate = new Date('{{$now}}');
     const getTime = (NowDate) => {
         NowDate.setSeconds(NowDate.getSeconds() + 1);
@@ -352,4 +342,4 @@
         setTimeout('ShowTime()', 1000);
     }
 </script>
-<script src="/js/workerReocrd1.js"></script>
+<script src="/js/workerReocrd.js"></script>

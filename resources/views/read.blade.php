@@ -49,7 +49,7 @@
                     <button class="btn btn-danger align-content-sm-end" type="submit">查詢</button>
                 </form>
                 @if( $records!=null)
-                    <h2 class="text-center" style="margin-top: 30px;">今日打卡紀錄</h2>
+                    <h2 class="text-center" style="margin-top: 30px;">本月打卡紀錄</h2>
                     <table class="table" style="margin-top: 10px;">
                         <thead class="thead-dark">
                         <tr>
