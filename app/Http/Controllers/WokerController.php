@@ -84,7 +84,7 @@ class WokerController extends Controller
             'status' => 1,
             'remark' => $request->{'remark'} ? $request->{'remark'} : '',
         );
-
+        /*
         $mail_binding = ['nickname' => 'water'];
         //如果有遲到-寄信通知
         if ($request->{'remark'}) {
@@ -97,9 +97,7 @@ class WokerController extends Controller
         }
         //excel 匯出
         Excel::store(new UsersExport, 'users.xlsx');
-
-        header("location:http://127.0.0.1:8082/home?message={'ok'}");
-        /*
+*/
         //寫入DB- punchRecord
         $result = $this->insertRecord((object) $punchData);
 
@@ -110,14 +108,14 @@ class WokerController extends Controller
             'updated_at' => now()
         ]);
 
-
-
-
         //提示訊息
         $message[0] = ($result) ? 'success' : $result->getMessage();
         //echo ($result->id);
 
         header("location:http://127.0.0.1:8082/home?message={$message[0]}");
+
+        /*
+       
 
         //die();
         //Redirect::to('home', ['message' => $this->message[0]]);
