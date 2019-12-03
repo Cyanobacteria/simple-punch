@@ -1,6 +1,7 @@
 //網頁讀取完畢-才執行
 window.onload = function() {
     let workRecord = this.document.getElementById("workRecord");
+    let updateModal = this.document.getElementById("exampleModalCenter");
     let punchModal = this.document.getElementById("exampleModalCenter1");
     //監聽事件 -  編輯單筆員工打卡紀錄
     workRecord.addEventListener("click", event => {
@@ -71,5 +72,22 @@ window.onload = function() {
             }
         }
     });
-    //
+    //監聽事件 - 管理者更新員工單筆打結果-資料驗證
+    updateModal.addEventListener("click", event => {
+        if (event.target.id === "recordupdatebtn") {
+            //檢查備註 和打卡結果不可為空
+            let recordPunchResult = this.document.getElementById(
+                "workpunchresult"
+            ).value;
+            let recordRemark = this.document.getElementById("workpunchremark")
+                .value;
+            //空值判斷
+            if (!recordPunchResult || !recordRemark) {
+                this.event.preventDefault();
+                this.alert(
+                    "欄位漏填 ｜ 管理者更新使用者打卡結果 , 打卡結果/備註都是必填"
+                );
+            }
+        }
+    });
 };

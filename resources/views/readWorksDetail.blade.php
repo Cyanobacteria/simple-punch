@@ -29,7 +29,7 @@
             @endif
                 <div class="row">
                     <div class="col-md-5">
-                        當前SSSS用戶 : {{Auth::user()->name}}
+                        當前用戶 : {{Auth::user()->name}}
                     </div>
                     <div class="col-md-6">
                         <div id="showbox" class="text-danger"></div>
@@ -205,7 +205,7 @@
         
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-              <button type="submit" class="btn btn-primary">確認修改</button>
+              <button type="submit" class="btn btn-primary" id="recordupdatebtn">確認修改</button>
             </div>
         </form>
           </div>
@@ -285,7 +285,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-            <button id="adminpunch" type="button" class="btn btn-primary">送出</button>
+            <button id="adminpunch" type="submit" class="btn btn-primary">送出</button>
           </div>
         </form>
         </div>
