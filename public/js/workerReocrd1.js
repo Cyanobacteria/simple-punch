@@ -1,8 +1,9 @@
 //網頁讀取完畢-才執行
 window.onload = function() {
+    console.log("this is v-----1");
     let workRecord = this.document.getElementById("workRecord");
-
-    //監聽事件
+    let punchModal = this.document.getElementById("exampleModalCenter1");
+    //監聽事件 -  編輯單筆員工打卡紀錄
     workRecord.addEventListener("click", event => {
         if (event.target.tagName === "BUTTON") {
             //取得事件使用者打卡資料
@@ -42,5 +43,24 @@ window.onload = function() {
             });
         }
     });
-    //
+    //監聽事件 - 管理者代打卡-資料驗證
+    punchModal.addEventListener("click", event => {
+        if (event.target.id === "adminpunch") {
+            //檢查每一個欄位不得為空
+            //員工姓名
+            let workerName = this.document.getElementById("punchworkername")
+                .value;
+            //日期
+            let punchDate = this.document.getElementById("punchdate").value;
+            //班別
+            let punchType = this.document.getElementById("punchtype").value;
+            //假別
+            let punchAction = this.document.getElementById("punchaction").value;
+            //備註
+            let remark = this.document.getElementById("punchremark").value;
+            console.log(
+                `${workerName}${punchDate}${punchType}${punchAction}${remark}`
+            );
+        }
+    });
 };

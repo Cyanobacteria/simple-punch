@@ -29,7 +29,7 @@
             @endif
                 <div class="row">
                     <div class="col-md-5">
-                        當前用戶 : {{Auth::user()->name}}
+                        當前SSSS用戶 : {{Auth::user()->name}}
                     </div>
                     <div class="col-md-6">
                         <div id="showbox" class="text-danger"></div>
@@ -230,7 +230,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-sm">員工姓名</span>
               </div>
-             <select class="form-control" name="user_id" id="">
+             <select class="form-control" name="user_id" id="punchworkername">
                <option value="" selected disabled> 請選擇</option>
                @foreach($workers as $worker )
              <option value="{{$worker ->id}}">{{$worker ->name}}</option>
@@ -243,7 +243,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">日期</span>
                   </div>
-                  <input type="datetime-local"  class="form-control"  name='date'>
+                  <input type="datetime-local"  class="form-control"  name='date' id="punchdate">
                    
                 </div> 
                
@@ -252,7 +252,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">班別</span>
                   </div>
-                  <select class="form-control" name="shift_type_id" id="">
+                  <select class="form-control" name="shift_type_id" id="punchtype">
                       <option value="" selected disabled> 請選擇</option>
                      @foreach($shiftTypes as $shiftType)
                   <option value="{{$shiftType->id}}">{{$shiftType->name}}</option>
@@ -263,9 +263,9 @@
                   <!-- 假別 -->
                   <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">假別</span>
+                      <span class="input-group-text" id="inputGroup-sizing-sm">打卡動作</span>
                     </div>
-                    <select class="form-control" name="punch_type_id" id="">
+                    <select class="form-control" name="punch_type_id" id="punchaction">
                         <option value="" selected disabled> 請選擇</option>
                         @foreach($punchTypes  as $punchType)
                     <option value="{{$punchType->id}}">{{$punchType->name}}</option>
@@ -278,14 +278,14 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
                     </div>
-                    <input type="text" name="remark" id=""  class="form-control" >
+                    <input type="text" name="remark" id="punchremark"  class="form-control" >
                      
                   </div>
                 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-            <button type="submit" class="btn btn-primary">送出</button>
+            <button id="adminpunch" type="button" class="btn btn-primary">送出</button>
           </div>
         </form>
         </div>
@@ -316,4 +316,4 @@
         setTimeout('ShowTime()', 1000);
     }
 </script>
-<script src="/js/workerReocrd1.js"></script>
+<script src="/js/workerReocrd.js"></script>
