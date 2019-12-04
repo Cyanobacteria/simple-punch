@@ -99,9 +99,10 @@ class WokerController extends Controller
         Excel::store(new UsersExport, 'users.xlsx');
 */
         //寫入DB- punchRecord
+
         $result = $this->insertRecord((object) $punchData);
 
-        //寫入DB- punchHistory - json 化 
+        //寫入DB- punchHistory - json 化
         PunchRecordHistory::create([
             'punch_record_id' => $result->id,
             'raw_data' => json_encode((object) $punchData),
@@ -111,17 +112,8 @@ class WokerController extends Controller
         //提示訊息
         $message[0] = ($result) ? 'success' : $result->getMessage();
         //echo ($result->id);
+       return redirect()->route('home',['message' => $message[0]]);
 
-        header("location:http://127.0.0.1:8082/home?message={$message[0]}");
-
-        /*
-       
-
-        //die();
-        //Redirect::to('home', ['message' => $this->message[0]]);
-        //        die('ff');
-        //redirect('/home?message='.$this->message[0]);
-*/
     }
 
     //取得使用者-月份紀錄
