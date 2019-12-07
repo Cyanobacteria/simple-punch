@@ -43,29 +43,33 @@ class Format
     private static function indexFillTree($todayPunchRecord, $shiftIdAry)
     {
         foreach ($todayPunchRecord as $k => &$v) {
-            $start = new \DateTime($v->start);
-            $start = $start->getTimestamp();
-            $end = new \DateTime($v->end);
-            $end = $end->getTimestamp();
-            $time = new \DateTime($v->time);
-            $time = $time->getTimestamp();
+           // $start = new \DateTime($v->start);
+           // $start = $start->getTimestamp();
+            $start = $v->start ;
+           // $end = new \DateTime($v->end);
+          //  $end = $end->getTimestamp();
+            $end = $v->end ;
+            //$time = new \DateTime($v->time);
+            $time =date('H:i:s', strtotime($v->time));
+          //  $time = $time->getTimestamp();
+            $remark = $v->remark;
             $actionType = $v->actionId;
             $shiftType = $v->shiftId;
             $currentCompare = &$shiftIdAry[$shiftType][$actionType];
             $stE = '早退';
             $stL = '遲到';
             $stN = '正常';
+            $stO = '請假';
 
-            switch ($actionType) {
-                case '1':
-                    $v->result = ($time < $start) ? $stN : $stL;
+            switch ($v->actionId) {
+                case '1': //上班
+                    $v->result = ($time > $start ) ? $stL : $stN;
                     break;
-
-                case '2':
-                    $v->result = ($time < $end) ? $stE : $stN;
+                case '2': //下班
+                    $v->result = ($time > $end) ? $stN : $stE;
                     break;
                 case '3':
-                    $v->result = $stN;
+                    $v->result = $stO;
                     break;
             }
 

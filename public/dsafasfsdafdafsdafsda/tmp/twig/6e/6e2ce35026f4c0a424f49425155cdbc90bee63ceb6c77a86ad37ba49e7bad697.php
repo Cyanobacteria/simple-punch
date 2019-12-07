@@ -64,6 +64,6 @@ class __TwigTemplate_fff5d852b3289d79b5d91227160119b134750ed2b7b74532081d597fa0f
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "columns_definitions/column_comment.twig", "/var/www/html/app/project4/dsafasfsdafdafsdafsda/templates/columns_definitions/column_comment.twig");
+        return new Twig_Source("", "columns_definitions/column_comment.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/columns_definitions/column_comment.twig");
     }
 }

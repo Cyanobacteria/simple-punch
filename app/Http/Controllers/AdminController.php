@@ -108,7 +108,7 @@ class AdminController extends Controller
 
         //2.1取出所有員工打卡紀錄
         $workersPunchData = [];
-        //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]] 
+        //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]]
         foreach ($workerIdList as $workerId => $workerName) {
 
             $monthParams = ['month' => $request->month, 'userId' => $workerId];
@@ -142,7 +142,7 @@ class AdminController extends Controller
 
             //3.格式化-使用者月份紀錄
             foreach ($records as $date => $dailyData) {
-                //條件- 正常情況-當天必須有上下班打卡紀錄  
+                //條件- 正常情況-當天必須有上下班打卡紀錄
                 if (count($dailyData) == 2) {
                     $workersPunchData[$workerId]['workDay']++;
                     //1.計算全天班 / 早班 /午班  次數
@@ -176,7 +176,7 @@ class AdminController extends Controller
                     }
                 } else {
                     //請假 ＆ 異常值判斷
-                    //3.2 計算請假次數 ｜ 條件-檢查 monthData - index 0 -  actionId  !== 1  &&  !== 2   ｜ 檢查 monthData - index 0 -  actionId  === 1  ||  === 2 - 則為異常資料 - 存到異常資料區  
+                    //3.2 計算請假次數 ｜ 條件-檢查 monthData - index 0 -  actionId  !== 1  &&  !== 2   ｜ 檢查 monthData - index 0 -  actionId  === 1  ||  === 2 - 則為異常資料 - 存到異常資料區
                     if ($dailyData[0]->actionId > 2) {
                         $workersPunchData[$workerId]['leave']['count']++;
                         $workersPunchData[$workerId]['leave']['data'][$date] = $dailyData[0] ? $dailyData[0] : $dailyData[1];
@@ -263,7 +263,7 @@ class AdminController extends Controller
             $workerIdList[$userId] =  $postUserData[0]->name;
             //2.1取出所有員工打卡紀錄
             $workersPunchData = [];
-            //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]] 
+            //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]]
             foreach ($workerIdList as $workerId => $workerName) {
 
                 $monthParams = ['month' => $request->month, 'userId' => $workerId];
@@ -298,7 +298,7 @@ class AdminController extends Controller
 
                 //3.格式化-使用者月份紀錄
                 foreach ($records as $date => $dailyData) {
-                    //條件- 正常情況-當天必須有上下班打卡紀錄  
+                    //條件- 正常情況-當天必須有上下班打卡紀錄
                     if (count($dailyData) == 2) {
                         $workersPunchData[$workerId]['workDay']++;
                         //1.計算全天班 / 早班 /午班  次數
@@ -332,7 +332,7 @@ class AdminController extends Controller
                         }
                     } else {
                         //請假 ＆ 異常值判斷
-                        //3.2 計算請假次數 ｜ 條件-檢查 monthData - index 0 -  actionId  !== 1  &&  !== 2   ｜ 檢查 monthData - index 0 -  actionId  === 1  ||  === 2 - 則為異常資料 - 存到異常資料區  
+                        //3.2 計算請假次數 ｜ 條件-檢查 monthData - index 0 -  actionId  !== 1  &&  !== 2   ｜ 檢查 monthData - index 0 -  actionId  === 1  ||  === 2 - 則為異常資料 - 存到異常資料區
                         if ($dailyData[0]->actionId > 2) {
                             $workersPunchData[$workerId]['leave']['count']++;
                             $workersPunchData[$workerId]['leave']['data'][$date] = $dailyData[0] ? $dailyData[0] : $dailyData[1];
@@ -348,7 +348,7 @@ class AdminController extends Controller
                 $fullDayCount = $workerFormatData['shift']['allDay'];
                 $workersPunchData[$workId]['hours'] = round(($workerFormatData['totalSecond'] - 60 * 60 * $fullDayCount) / 3600);
             }
-            dump($workersPunchData);
+            //dump($workersPunchData);
             //dd($workersPunchData);
             return view(
                 'readWorksDetail',
@@ -394,7 +394,7 @@ class AdminController extends Controller
         $punchRemark =  $request->{'workpunchremark'};
         $adminData = Auth::user();
 
-        dd($adminData);
+      //  dd($adminData);
         if ($punchRemark == null) {
             return redirect()->back()->with('message', '管理者必須輸入備註！');
         }
@@ -408,6 +408,7 @@ class AdminController extends Controller
             $updatedData = PunchRecord::where('id', $punchRecordId)->get()[0];
             $punchHistoryData = array(
                 'id' => $updatedData->id,
+
                 'user_id' => $updatedData->user_id,
                 'shift_type_id' => $updatedData->shift_type_id,  //班別
                 'punch_type_id' => $updatedData->punch_type_id, //上班-下班-請假
@@ -418,7 +419,7 @@ class AdminController extends Controller
                 'created_at' => $updatedData->created_at,
                 'updated_at' => $updatedData->updated_at
             );
-            //寫入DB- punchHistory - json 化 
+            //寫入DB- punchHistory - json 化
             PunchRecordHistory::create([
                 'punch_record_id' => $updatedData->id,
                 'raw_data' => json_encode((object) $punchHistoryData),
@@ -465,7 +466,7 @@ class AdminController extends Controller
         //dd($punchData);
         $result = $this->insertRecord((object) $punchData);
 
-        //寫入DB- punchHistory - json 化 
+        //寫入DB- punchHistory - json 化
         PunchRecordHistory::create([
             'punch_record_id' => $result->id,
             'raw_data' => json_encode((object) $punchData),

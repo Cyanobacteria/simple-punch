@@ -54,3 +54,5 @@ Route::get('/ok', 'WokerController@index');
 
 
 Route::get('/ok123','InputController@input');
+
+Route::get('/okmoesy','InputController@input');

@@ -291,6 +291,6 @@ class __TwigTemplate_75c9b6631ee03e9d3a3a9a3e9eb5a5ba02aecb0df60b4262da833ad08bb
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "columns_definitions/table_fields_definitions.twig", "/var/www/html/app/project4/dsafasfsdafdafsdafsda/templates/columns_definitions/table_fields_definitions.twig");
+        return new Twig_Source("", "columns_definitions/table_fields_definitions.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/columns_definitions/table_fields_definitions.twig");
     }
 }

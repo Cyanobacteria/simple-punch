@@ -103,6 +103,6 @@ class __TwigTemplate_5b7c6b91665ee49924ff52650553039ba1c7c826314d015adcba7dcf9b3
 
     public function getSourceContext()
     {
-        return new Twig_Source("", "columns_definitions/column_attribute.twig", "/var/www/html/app/project4/dsafasfsdafdafsdafsda/templates/columns_definitions/column_attribute.twig");
+        return new Twig_Source("", "columns_definitions/column_attribute.twig", "/var/www/html/app/public/dsafasfsdafdafsdafsda/templates/columns_definitions/column_attribute.twig");
     }
 }

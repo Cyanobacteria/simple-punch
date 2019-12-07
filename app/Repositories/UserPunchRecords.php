@@ -49,13 +49,15 @@ class UserPunchRecords
                     'c.end as end',   // c-shift_types 班別 結束時間
                     'c.name as shift',   // c-shift_types 班別  名稱
                     'c.id as shiftId',   // c-shift_types 班別    ID
+                    'a.remark as remark' // a-remark 備註
                 ]
             )
             ->whereBetween('a.created_at', [$start, $end])  //條件 - 打卡紀錄之起始時間 - 符合指定條件
             ->where('a.user_id', Auth::user()->id) //條件 - 打卡紀錄之userID - 符合指定條件
-            ->leftJoin('punch_types AS b', 'b.id', '=', 'a.punch_type_id')  // Join - b-punch_types 上下班假 
+            ->leftJoin('punch_types AS b', 'b.id', '=', 'a.punch_type_id')  // Join - b-punch_types 上下班假
             ->leftJoin('shift_types AS c', 'c.id', '=', 'a.shift_type_id') // Join - c-shift_types 班別
             ->get();  //取得資料
+
 
         return $todayPunchRecord;
     }
@@ -86,7 +88,7 @@ class UserPunchRecords
             )
             ->whereBetween('a.created_at', [$start, $end])  //條件 - 打卡紀錄之起始時間 - 符合指定條件
             ->where('a.user_id', $userId) //條件 - 打卡紀錄之userID - 符合指定條件
-            ->leftJoin('punch_types AS b', 'b.id', '=', 'a.punch_type_id')  // Join - b-punch_types 上下班假 
+            ->leftJoin('punch_types AS b', 'b.id', '=', 'a.punch_type_id')  // Join - b-punch_types 上下班假
             ->leftJoin('shift_types AS c', 'c.id', '=', 'a.shift_type_id') // Join - c-shift_types 班別
             ->get();  //取得資料
 

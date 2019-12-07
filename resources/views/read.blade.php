@@ -57,6 +57,7 @@
                             <th>動作</th>
                             <th>結果</th>
                             <th>時間</th>
+                            <th>備註</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -75,6 +76,7 @@
                                         <td class="">{{$day->result}}</td>
                                     @endif
                                     <td>{{$day->time}}</td>
+                                    <td>{{$day->remark}}</td>
                                 </tr>
                             @endforeach
                         @endforeach

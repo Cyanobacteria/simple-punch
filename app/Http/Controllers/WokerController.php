@@ -21,7 +21,7 @@ class WokerController extends Controller
     public function index(Request $request)
     {
         //
-        dd(Auth::user());
+       // dd(Auth::user());
         return view('ok');
     }
 
