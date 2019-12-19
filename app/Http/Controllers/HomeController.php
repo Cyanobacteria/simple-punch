@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\punchRecord;
+use App\PunchResult;
+use App\PunchType;
 use App\Services\Format;
+use App\ShiftType;
+use App\Statuses;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,15 +36,25 @@ class HomeController extends Controller
 
     public function index()
     {
-
+        $shift_types = DB::table('shift_types')->get();
         $records = Format::index();
-        return view('home', ['now' => now(), 'records' => $records, 'message' => []]);
+        return view('home', ['now' => now(), 'records' => $records, 'message' => [], 'shift_types' => $shift_types]);
     }
 
     public function read(Request $request)
     {
         //dump($request->month);
         //取出打卡紀錄
+
+        $monthParams = ['month' => $request->month,];
+        $sMonth = [];
+        Session::put('requestMonth', $monthParams['month']);
+
+        //取出Session值，如果值為空的話則回傳default
+        $sMonth = Session::get('requestMonth', function () {
+            return 'default';
+        });
+
         $records = Format::month($request->month);
         //取月份
         $month = DB::table('punch_records as a')
@@ -54,7 +69,9 @@ class HomeController extends Controller
         }
         //取唯一值
         $month = array_unique($newAry);
+
         // dd($records);
-        return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => []]);
+        return view('read', ['month' => $month, 'now' => now(), 'records' => $records, 'message' => [],'sMonth' => $sMonth,]);
     }
+
 }

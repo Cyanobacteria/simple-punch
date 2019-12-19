@@ -35,7 +35,7 @@
                 <form  id="punchForm" method="post" action="{{ route('Worker.store') }}">
                     @csrf
                     <br>
-                
+
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">打卡動作類型</span>
@@ -59,7 +59,7 @@
 
                     <div class="input-group input-group-sm mb-3 d-none">
                         <input  id="punchResult"  type="text" class="form-control" name="punchResult" >
-                    </div> 
+                    </div>
 
                     <div  id="remark" class="input-group input-group-sm mb-3 d-none">
                         <div class="input-group-prepend">
@@ -68,10 +68,12 @@
                         <input type="text" class="form-control"  name="remark" placeholder="請輸入遲到or早退原因">
                     </div>
 
-                   
+
 
 
                     <button id="punchSubmit" class="btn btn-danger align-content-sm-end" type="submit">punch!!</button>
+
+                    <button id="insertUser" style='float:right' class="btn btn-danger align-content-sm-end" type="submit">create</button>
                 </form>
                 @if( $records!=null)
                     <h2 class="text-center" style="margin-top: 30px;">今日打卡紀錄</h2>
@@ -117,7 +119,7 @@
         let s = NowDate.getSeconds();
         return {h,m,s};
     }
-    
+
 
     //動態時間
     function ShowTime() {
@@ -125,7 +127,7 @@
         document.getElementById('showbox').innerHTML = '當前時間 : '+h + ':' + m + ':' + s ;
         setTimeout('ShowTime()', 1000);
     }
-    
+
 </script>
 
 <script src="/js/punch.js"></script>

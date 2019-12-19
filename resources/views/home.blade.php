@@ -48,7 +48,7 @@
                 <form  id="punchForm" method="post" action="{{ route('Worker.store') }}">
                     @csrf
                     <br>
-                
+
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">打卡動作類型</span>
@@ -64,15 +64,18 @@
                             <span class="input-group-text">班別</span>
                         </div>
                         <select  id="shiftType"  class="form-control" name="shift-type">
-                            <option value="3">全班</option>
-                            <option value="1">早班</option>
-                            <option value="2">午班</option>
+                            @foreach($shift_types as $shift_type)
+                                @if( $shift_type->status == 1)
+                                <option value="{{$shift_type ->id}}">{{$shift_type ->name}}</option>
+                                @else
+                                    @endif
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="input-group input-group-sm mb-3 d-none">
                         <input  id="punchResult"  type="text" class="form-control" name="punchResult" >
-                    </div> 
+                    </div>
 
                     <div  id="remark" class="input-group input-group-sm mb-3 d-none">
                         <div class="input-group-prepend">
@@ -81,10 +84,10 @@
                         <input type="text" class="form-control"  name="remark" placeholder="請輸入遲到or早退原因">
                     </div>
 
-                   
-
 
                     <button id="punchSubmit" class="btn btn-danger align-content-sm-end" type="submit">punch!!</button>
+
+
                 </form>
                 @if( $records!=null)
                     <h2 class="text-center" style="margin-top: 30px;">今日打卡紀錄</h2>
@@ -95,6 +98,7 @@
                             <th>動作</th>
                             <th>結果</th>
                             <th>時間</th>
+                            <th>備註</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -109,9 +113,9 @@
                                     <td class="">{{$time->result}}</td>
                                 @endif
                                 <td>{{$time->time}}</td>
+                                <td>{{$time->remark}}</td>
                             </tr>
                         @endforeach
-
                         </tbody>
                     </table>
                 @endif
@@ -130,7 +134,7 @@
         let s = NowDate.getSeconds();
         return {h,m,s};
     }
-    
+
 
     //動態時間
     function ShowTime() {
@@ -138,7 +142,6 @@
         document.getElementById('showbox').innerHTML = '當前時間 : '+h + ':' + m + ':' + s ;
         setTimeout('ShowTime()', 1000);
     }
-    
-</script>
 
+</script>
 <script src="/js/punch.js"></script>

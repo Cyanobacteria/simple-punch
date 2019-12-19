@@ -43,15 +43,15 @@ class Format
     private static function indexFillTree($todayPunchRecord, $shiftIdAry)
     {
         foreach ($todayPunchRecord as $k => &$v) {
-           // $start = new \DateTime($v->start);
-           // $start = $start->getTimestamp();
-            $start = $v->start ;
-           // $end = new \DateTime($v->end);
-          //  $end = $end->getTimestamp();
-            $end = $v->end ;
+            //$start = new \DateTime($v->start);
+            //$start = $start->getTimestamp();
+            //$end = new \DateTime($v->end);
+            //$end = $end->getTimestamp();
             //$time = new \DateTime($v->time);
+            //$time = $time->getTimestamp();
+            $end = $v->end ;
+            $start = $v->start ;
             $time =date('H:i:s', strtotime($v->time));
-          //  $time = $time->getTimestamp();
             $remark = $v->remark;
             $actionType = $v->actionId;
             $shiftType = $v->shiftId;

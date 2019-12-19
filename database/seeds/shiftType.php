@@ -36,14 +36,6 @@ class shiftType extends Seeder
                 'status' => 1,
                 'created_at'=>now()
 
-            ], [
-                'id' => 3,
-                'name' => "全班",
-                'start' => '09:00:00',
-                'end' => '18:00:00',
-                'status' => 1,
-                'created_at'=>now()
-
             ]]
         );
     }

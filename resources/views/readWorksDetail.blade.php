@@ -2,6 +2,8 @@
 
 @section('content')
 
+
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -38,10 +40,15 @@
 
 
                 <script>ShowTime()</script>
+
+
+
                 <!-- [ 月份選擇-下拉選單]-->
-                <form method="post" action="{{ route('workerRecordDetail.get') }}">
+                <form method="post" action="{{ route('workerRecordDetail.get') }}" >
+
                     @csrf
                     <br>
+
                     <!---月份下拉選單--->
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
@@ -50,9 +57,14 @@
                         <select class="form-control" name="month">
                           <option value="" disabled selected>選擇檢視月份</option>
                             @foreach($month as $m)
-                                <option value="{{$m}}">{{$m}}</option>
+                                @if($sMonth == $m)
+                                    <option value="{{$m}}" selected>{{$m}}</option>
+                                @else
+                                    <option value="{{$m}}">{{$m}}</option>
+                                @endif
                             @endforeach
                         </select>
+
                     </div>
                       <!---使用者 - 下拉選單--->
                     <div class="input-group input-group-sm mb-3">
@@ -62,7 +74,11 @@
                         <select class="form-control" name="userId">
                           <option value="" disabled selected>選擇檢視員工</option>
                           @foreach($workers as $worker )
-                          <option value="{{$worker ->id}}">{{$worker ->name}}</option>
+                                @if($worker ->id == $sId)
+                                    <option value="{{$worker ->id}}" selected>{{$worker ->name}}</option>
+                                @else
+                                    <option value="{{$worker ->id}}">{{$worker ->name}}</option>
+                                @endif
                           @endforeach
                         </select>
                     </div>
@@ -71,11 +87,12 @@
                       代打請假
                     </button>
                 </form>
+
                 <div id="workRecord">
 
-               
+
                 <!-- [ 資料呈現區 ]-->
-               
+
                 @foreach($workersPunchData as $workId=>$workMonthData)
                 @if(  !($workMonthData['monthData']==[]))
                 <table class="table">
@@ -113,7 +130,7 @@
                      </thead>
                     <tbody>
                         <!--本月詳細資料-->
-                       
+
                         @foreach($workMonthData['monthData'] as $monthDate=>$dayData)
                         <tr>
                             <td class="text-center" colspan="4">{{$monthDate}}</td>
@@ -124,7 +141,7 @@
                       <td>{{$data->result}}</td>
                       <td>{{$data->shift}}</td>
                       <td>{{$data->remark}}</td>
-                      <td> 
+                      <td>
                             <button type="button"  class="btn btn-primary"  data-username={{$workMonthData['name']}}  data-punchrecordid={{$data->punchRecordId }}  data-userid={{$data->userId }}   data-toggle="modal" data-target="#exampleModalCenter">
                                     編輯
                                   </button>
@@ -132,17 +149,17 @@
                       </tr>
                       @endforeach
                       @endforeach
-                      
-                     
+
+
                     </tbody>
                   </table>
                    @endif
                   @endforeach
-                 
+
 
 
                 </div>
-            
+
             </div>
         </div>
     </div>
@@ -150,7 +167,7 @@
 
 <!-- Button trigger modal -->
 
-      
+
       <!-- Modal-編輯卡片元件 -->
       <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -161,7 +178,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            
+
             <form action="{{ route('updatedRecord.post') }}" method="post">
               @csrf
             <div class="modal-body">
@@ -186,12 +203,12 @@
                               <span  class="input-group-text" id="inputGroup-sizing-sm">打卡結果</span>
                             </div>
 
-                         <select name="workpunchresult" id="workpunchresult" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">  
+                         <select name="workpunchresult" id="workpunchresult" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                               <option value="1">遲到</option>
                              <option value="2">早退</option>
-                             <option value="3" >正常</option> 
+                             <option value="3" >正常</option>
                          </select>
-                        
+
                         </div>
                             <!-- 備註 -->
                     <div class="input-group input-group-sm mb-3">
@@ -200,9 +217,9 @@
                             </div>
                             <input type="text"  name="workpunchremark" id="workpunchremark" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                           </div>
-                    
+
             </div>
-        
+
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
               <button type="submit" class="btn btn-primary">確認修改</button>
@@ -223,7 +240,7 @@
           </div>
           <form action="{{ route('punchLeave.post') }}" method="post">
           <div class="modal-body">
-            
+
               @csrf
              <!-- 員工姓名 -->
             <div class="input-group input-group-sm mb-3">
@@ -236,7 +253,7 @@
              <option value="{{$worker ->id}}">{{$worker ->name}}</option>
              @endforeach
              </select>
-            
+
               </div>
               <!-- 日期-->
               <div class="input-group input-group-sm mb-3">
@@ -244,9 +261,9 @@
                     <span class="input-group-text" id="inputGroup-sizing-sm">日期</span>
                   </div>
                   <input type="datetime-local"  class="form-control"  name='date'>
-                   
-                </div> 
-               
+
+                </div>
+
               <!-- 班別 -->
                 <div class="input-group input-group-sm mb-3">
                   <div class="input-group-prepend">
@@ -258,7 +275,7 @@
                   <option value="{{$shiftType->id}}">{{$shiftType->name}}</option>
                   @endforeach
                 </select>
-                   
+
                 </div>
                   <!-- 假別 -->
                   <div class="input-group input-group-sm mb-3">
@@ -271,7 +288,7 @@
                     <option value="{{$punchType->id}}">{{$punchType->name}}</option>
                     @endforeach
                       </select>
-                     
+
                   </div>
                     <!-- 備註 -->
                   <div class="input-group input-group-sm mb-3">
@@ -279,9 +296,9 @@
                       <span class="input-group-text" id="inputGroup-sizing-sm">備註</span>
                     </div>
                     <input type="text" name="remark" id=""  class="form-control" >
-                     
+
                   </div>
-                
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>

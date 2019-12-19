@@ -20,7 +20,7 @@ class UserPunchRecords
                     'a.shift_type_id as shift_type_id',
                     'a.	punch_type_id as 	punch_type_id',
                     'a.punch_user_id as punch_user_id',
-                    'a.	punch_result_id	 as 	punch_result_id	',
+                    'a.	punch_result_id	 as  punch_result_id	',
                     'a.	status as 	status',
                     'a.remark as remark',
                     'a.created_at as created_at',

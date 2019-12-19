@@ -18,7 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    
+
 </head>
 <body>
     <div id="app">
@@ -40,20 +40,20 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                      
+
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
-                             
+
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
-                              
+
                             @endif
                         @else
-                        
+
 
 
                             <li class="nav-item dropdown">
@@ -67,11 +67,13 @@
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-                                     
+
                                             <a class="dropdown-item"  href="{{ route('read.get') }}">每月紀錄</a>
                                             @if(Auth::user()->isAdmin ==1)
                                             <a class="dropdown-item"  href="{{ route('workerRecord.get') }}">員工紀錄</a>
                                             <a class="dropdown-item"  href="{{ route('workerRecordDetail.get') }}">員工個人詳細紀錄</a>
+                                            <a class="dropdown-item"  href="{{ route('addClass.get') }}">新增班別</a>
+                                            <a class="dropdown-item"  href="{{ route('readClass.get') }}">查看班別</a>
                                             @endif
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -79,7 +81,7 @@
                                     </form>
                                 </div>
                             </li>
-                           
+
                         @endguest
                     </ul>
                 </div>

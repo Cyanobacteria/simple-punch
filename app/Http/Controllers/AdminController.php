@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Statuses;
+use http\Cookie;
 use Illuminate\Http\Request;
+
 //model
 //user model
 use App\User;
@@ -18,8 +21,10 @@ use App\Services\Format;
 //Facades
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
 //repo
 use App\Repositories\UserPunchRecords;
+use Illuminate\Support\Facades\Session;
 
 
 class AdminController extends Controller
@@ -38,9 +43,9 @@ class AdminController extends Controller
         try {
             $t = new PunchRecord;
             $t->user_id = $params->user_id;
-            $t->shift_type_id  = $params->shift_type_id;
-            $t->punch_type_id  = $params->punch_type_id;
-            $t->punch_user_id  = $params->punch_user_id;
+            $t->shift_type_id = $params->shift_type_id;
+            $t->punch_type_id = $params->punch_type_id;
+            $t->punch_user_id = $params->punch_user_id;
             $t->punch_result_id = $params->punch_result_id;
             $t->status = $params->status;
             $t->remark = $params->remark;
@@ -64,7 +69,8 @@ class AdminController extends Controller
         $records = Format::index();
         return view('adminHome', ['now' => now(), 'records' => $records, 'message' => []]);
     }
-    //j管理者檢視自己的打卡紀錄
+
+    //管理者檢視自己的打卡紀錄
     public function record(Request $request)
     {
         if (Auth::user()->isAdmin != 1) {
@@ -101,19 +107,37 @@ class AdminController extends Controller
 
         //1.調出員工清單    - user table  - isAdmim ==0
         $workerIdList = [];
-        $workers = User::where('isAdmin', 0)->get();
+        //$workers = User::where('isAdmin', 0)->get();
+        //調出資料表users內的人員資料
+        $workers = DB::table('users')->get();
         foreach ($workers as $user) {
             $workerIdList[$user->id] = $user->name;
         }
 
+
         //2.1取出所有員工打卡紀錄
         $workersPunchData = [];
+
         //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]]
         foreach ($workerIdList as $workerId => $workerName) {
 
             $monthParams = ['month' => $request->month, 'userId' => $workerId];
+
+            //存入Session中
+            Session::put('requestMonth', $monthParams['month']);
+            Session::put('requestId', $monthParams['userId']);
+
+            //取出Session值，如果值為空的話則回傳default
+            $sMonth = Session::get('requestMonth', function () {
+                return 'default';
+            });
+            $sId = Session::get('requestId', function () {
+                return 'default';
+            });
+
             //1.取出使用者該月份紀錄
             $records = Format::monthByUserId($monthParams);
+
             //2.初始化資料結構
             //name
             $workersPunchData[$workerId]['name'] = $workerName;
@@ -195,7 +219,6 @@ class AdminController extends Controller
         //dump($workersPunchData);
 
 
-
         //4.取月份為一值-當作下拉選單
         $month = DB::table('punch_records as a')
             ->select('a.created_at as date')
@@ -214,13 +237,20 @@ class AdminController extends Controller
 
 
         //逐一整理資料 ｜ 總時數 - 遲到-早退-請假 ｜ 狀態-時間-事由
-        return view('readWorks', ['month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => []]);
+        return view('readWorks', ['month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => [],'sMonth' => $sMonth, 'sId' => $sId,]);
     }
 
 
     //管理者檢視單一員工詳細紀錄 workerRecordDetail
     public function workerRecordDetail(Request $request)
     {
+
+        /* setcookie("Data",$request,time()+3600);
+         $cookie = $_COOKIE['Data'];
+         dump($_COOKIE);
+         dd(urlencode($_COOKIE['app_session']));*/
+
+
         if (Auth::user()->isAdmin != 1) {
             return redirect()->back()->with('message', '限定管理者存取！');
         }
@@ -228,18 +258,22 @@ class AdminController extends Controller
         //1.整理預設資料（員工清單  /  所有月份  / 班別 /  上下班-假別  / 所有打卡結果 ）
         //調出員工清單    - user table  - isAdmim ==0
         $workerIdList = [];
-        $workers = User::where('isAdmin', 0)->get();
+        //$workers = User::where('isAdmin', 0)->get();
+        //調出資料表 users
+        $workers = DB::table('users')->get();
 
         //月份清單-當作下拉選單
         $month = DB::table('punch_records as a')
             ->select('a.created_at as date')
             ->get();
+
         $newAry = [];
         foreach ($month as $k => $v) { //格式化-月份
             $date = new \DateTime($v->date);
             $newAry[] = $date->format("Y-m");
         }
         $month = array_unique($newAry); //取唯一值
+
 
         //班別-清單 （ 早午全天班）
         $shiftTypes = ShiftType::all();
@@ -248,8 +282,9 @@ class AdminController extends Controller
         //打卡結果
         $punchResults = PunchResult::all();
 
+
         //POST - 接受 指定 使用者 調出當月資料===========================
-        if ($request->{'userId'} ||  $request->month) {
+        if ($request->{'userId'} || $request->month) {
             if ($request->{'userId'} == null) {
                 return redirect()->back()->with('message', '管理者必須輸入使用者身份！');
             };
@@ -258,21 +293,40 @@ class AdminController extends Controller
             };
             $userId = $request->{'userId'};
 
-
             $postUserData = User::where('id', $userId)->get();
-            $workerIdList[$userId] =  $postUserData[0]->name;
+            $workerIdList[$userId] = $postUserData[0]->name;
+
+
             //2.1取出所有員工打卡紀錄
             $workersPunchData = [];
             //迴圈調用使用者資料-建立資料物件 userId =>[  ''name' =>water ,''monthData'=>[xxx]]
             foreach ($workerIdList as $workerId => $workerName) {
 
                 $monthParams = ['month' => $request->month, 'userId' => $workerId];
+
+                //Session抓去值
+                \session_start();
+                $sMonth = [];
+                $sId = [];
+
+                //存入Session中
+                Session::put('requestMonth', $monthParams['month']);
+                Session::put('requestId', $monthParams['userId']);
+
+                //取出Session值，如果值為空的話則回傳default
+                $sMonth = Session::get('requestMonth', function () {
+                    return 'default';
+                });
+                $sId = Session::get('requestId', function () {
+                    return 'default';
+                });
+
+
                 //1.取出使用者該月份紀錄
                 $records = Format::monthByUserId($monthParams);
-
                 //2.初始化資料結構
                 //name
-                $workersPunchData[$workerId]['name'] = $workerName;
+                $workersPunchData[$workerId]['name'] = $workerId;
                 //monthData
                 $workersPunchData[$workerId]['monthData'] = $records;
                 //hours
@@ -353,34 +407,25 @@ class AdminController extends Controller
             return view(
                 'readWorksDetail',
                 [
-                    'month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers,  'message' => [],
-                    'workersPunchData' => $workersPunchData, 'records' => $records,
+                    'month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'message' => [],
+                    'workersPunchData' => $workersPunchData, 'records' => $records, 'sMonth' => $sMonth, 'sId' => $sId,
                 ]
             );
         }
-
-
-
-
-
-
-
-
-
 
 
         //逐一整理資料 ｜ 總時數 - 遲到-早退-請假 ｜ 狀態-時間-事由
         return view(
             'readWorksDetail',
             [
-                'month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers,  'message' => [],
-                'workersPunchData' => [], 'records' => [],
+                'month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'message' => [],
+                'workersPunchData' => [], 'records' => [], 'sMonth' => [], 'sId' => [],
             ]
 
         );
+
         //'workersPunchData' => $workersPunchData, 'records' => $records,
     }
-
 
 
     public function updatedRecord(Request $request)
@@ -391,10 +436,10 @@ class AdminController extends Controller
         // 取得更新值-建立更新物件
         $punchRecordId = $request->{'punchid'};
         $punchResult = $request->{'workpunchresult'};
-        $punchRemark =  $request->{'workpunchremark'};
+        $punchRemark = $request->{'workpunchremark'};
         $adminData = Auth::user();
 
-      //  dd($adminData);
+        //  dd($adminData);
         if ($punchRemark == null) {
             return redirect()->back()->with('message', '管理者必須輸入備註！');
         }
@@ -406,9 +451,9 @@ class AdminController extends Controller
                 ->update(['punch_user_id' => $adminData->id, 'punch_result_id' => $punchResult, 'remark' => $punchRemark, 'updated_at' => now()]);
 
             $updatedData = PunchRecord::where('id', $punchRecordId)->get()[0];
+
             $punchHistoryData = array(
                 'id' => $updatedData->id,
-
                 'user_id' => $updatedData->user_id,
                 'shift_type_id' => $updatedData->shift_type_id,  //班別
                 'punch_type_id' => $updatedData->punch_type_id, //上班-下班-請假
@@ -422,7 +467,7 @@ class AdminController extends Controller
             //寫入DB- punchHistory - json 化
             PunchRecordHistory::create([
                 'punch_record_id' => $updatedData->id,
-                'raw_data' => json_encode((object) $punchHistoryData),
+                'raw_data' => json_encode((object)$punchHistoryData),
                 'updated_at' => now()
             ]);
         };
@@ -431,12 +476,11 @@ class AdminController extends Controller
     }
 
 
-
-
     //檢視 -管理者打卡
     public function punchLeave(Request $request)
     {
         if (Auth::user()->isAdmin != 1) {
+            $punchRemark = $request->{'remark'};
             return redirect()->back()->with('message', '限定管理者存取！');
         }
         // 取得更新值-建立更新物件
@@ -444,7 +488,7 @@ class AdminController extends Controller
         $date = $request->{'date'};
         $shiftTypes = $request->{'shift_type_id'};
         $punchTypes = $request->{'punch_type_id'};
-        $punchRemark =  $request->{'remark'};
+        $punchRemark = $request->{'remark'};
         $adminData = Auth::user();
         if ($punchRemark == null) {
             return redirect()->back()->with('message', '管理者必須輸入備註！');
@@ -455,8 +499,8 @@ class AdminController extends Controller
         $punchData = array(
             'user_id' => $userId,
             'shift_type_id' => $shiftTypes,  //班別
-            'punch_type_id' =>  $punchTypes, //上班-下班-請假
-            'punch_user_id' =>  $adminData->id,
+            'punch_type_id' => $punchTypes, //上班-下班-請假
+            'punch_user_id' => $adminData->id,
             'punch_result_id' => 3, //打卡結果- 遲到-早退-正常
             'status' => 1,
             'remark' => $punchRemark,
@@ -464,22 +508,127 @@ class AdminController extends Controller
             'updated_at' => now()->toDateTimeString('Y-m-d')
         );
         //dd($punchData);
-        $result = $this->insertRecord((object) $punchData);
+        $result = $this->insertRecord((object)$punchData);
 
         //寫入DB- punchHistory - json 化
         PunchRecordHistory::create([
             'punch_record_id' => $result->id,
-            'raw_data' => json_encode((object) $punchData),
+            'raw_data' => json_encode((object)$punchData),
             'updated_at' => now()
         ]);
         return redirect()->back()->with('messageSuccess', '管理者成功幫打卡！');
     }
 
+    private function Shift_types($params)
+    {
+        try {
+            $t = new ShiftType();
+            $t->name = $params->shift_type_name;
+            $t->start = $params->shift_type_start;
+            $t->end = $params->shift_type_end;
+            $t->status = $params->shift_type_status;
+            $t->created_at = now();
+            $t->updated_at = now();
+
+            $t->save();
+        } catch (\Exception $e) {
+            return $e;
+        }
+        return $t;
+    }
+
+    //頁面 -管理者新增班別
+    public function addClass()
+    {
+
+        if (Auth::user()->isAdmin != 1) {
+
+            return redirect()->back()->with('message', '管理者必須輸入備註！');
+        }
+
+        $shift_types = ShiftType::all();
+        $status = Statuses::all();
+
+        return view('addClass', ['shift_types'=>$shift_types, 'statuses'=>$status]);
+
+    }
+
+    //存入DB  管理者新增班別資料
+    public function addClass_save(Request $request)
+    {
+
+        if (Auth::user()->isAdmin != 1) {
+            return redirect()->back()->with('message', '限定管理者存取！');
+        }
+
+        $name = $request->{'shift_type_name'};
+        $start = $request->{'shift_type_start'};
+        $end = $request->{'shift_type_end'};
+        $status = $request->{'shift_type_status'};
+
+
+        $addData = array(
+            'shift_type_name' => $name,
+            'shift_type_start' =>date('H:i:s',strtotime($start)),
+            'shift_type_end' =>  date('H:i:s',strtotime($end)),
+            'shift_type_status' => $status,
+            'created_at' => now()->toDateTimeString('Y-m-d'),
+            'updated_at' => now()->toDateTimeString('Y-m-d')
+        );
+
+
+        $result = $this->Shift_types((object)$addData);
+
+
+        return redirect()->back()->with('messageSuccess', '管理者成功新增班別！');
+    }
+
+    //頁面  管理者查看班別
+    public function readClassUpdate()
+   {
+
+        if (Auth::user()->isAdmin != 1) {
+
+            return redirect()->back()->with('message', '管理者必須輸入備註！');
+        }
+
+        $shift_types = ShiftType::all();
+        $status = Statuses::all();
+
+        return view('readClass', ['shift_types'=>$shift_types, 'statuses'=>$status]);
+
+    }
+
+    //存入DB 管理者修改班別（可用 or 不可用）
+    public function readClassUpdate_save(Request $request)
+    {
+        $shift_types = DB::table('shift_types')->get();
+
+        $ids = $request->{'shift_type_id'};
+        $name = $request->{'shift_type_name'};
+        $start = $request->{'shift_type_start'};
+        $end = $request->{'shift_type_end'};
+        $status = $request->{'shift_type_status'};
+        $create_time = now();
+        $update_time = now();
+
+        $adminData = Auth::user();
+        if ($adminData->isAdmin == 1) {
+             foreach($ids as $k => $id){
+                $shift_type = ShiftType::where('id', $id)
+                    ->update(['id' => $id, 'name' => $name[$k], 'start' => $start[$k], 'end' => $end[$k], 'status' => $status[$k], 'created_at' => $create_time, 'updated_at' => $update_time]);
+            }
+
+
+            return redirect()->back()->with('messageSuccess', '管理者成功更新班別資料！');
+        }
+    }
 
 
 
 
     //----------------------------------------------------------------------
+
     /**
      * Display a listing of the resource.
      *
@@ -503,7 +652,7 @@ class AdminController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -514,7 +663,7 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -525,7 +674,7 @@ class AdminController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -536,8 +685,8 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -548,7 +697,7 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

@@ -30,7 +30,6 @@ Route::post('/work', 'WokerController@store')->name('Worker.store');
 Route::group(['prefix' => 'admin'], function () {
 
 
-
     //檢視員工紀錄 ｜ 檢視-切換身份-更動紀錄-幫打請假卡
     Route::get('/worker/record', 'AdminController@workerRecord')->name('workerRecord.get');
     Route::post('/worker/record', 'AdminController@workerRecord')->name('workerRecord.post');
@@ -41,6 +40,14 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/worker/record/update', 'AdminController@updatedRecord')->name('updatedRecord.post');
     //幫員工打請假卡
     Route::post('/worker/record/punchleave', 'AdminController@punchLeave')->name('punchLeave.post');
+    //新增班別
+    Route::get('/home/addClass', 'AdminController@addClass')->name('addClass.get');
+    Route::post('/home/addClass_save', 'AdminController@addClass_save')->name('addClass.post');
+    //查看班別
+    Route::get('/home/readClass', 'AdminController@readClassUpdate')->name('readClass.get');
+    Route::post('/home/readClass_save', 'AdminController@readClassUpdate_save')->name('readClass.post');
+    //修改事由
+    Route::post('/home/updateClass', 'AdminController@updateShift_type')->name('updateClass.post');
 });
 
 

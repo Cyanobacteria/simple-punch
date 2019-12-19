@@ -42,7 +42,11 @@
                         </div>
                         <select class="form-control" name="month">
                             @foreach($month as $m)
-                                <option value="{{$m}}">{{$m}}</option>
+                                @if($sMonth == $m)
+                                    <option value="{{$m}}"selected>{{$m}}</option>
+                                @else
+                                    <option value="{{$m}}">{{$m}}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
