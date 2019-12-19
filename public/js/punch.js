@@ -92,9 +92,11 @@ window.onload = function() {
             } else {
                 result = "正常";
             }
-        }else if(shiftType == 9) {
-            //星期三早退
-            if (punchType == 1 && millisecondsNow > millisecondsToday + am09) {
+        }else if (shiftType == 5) {
+            //全天班
+
+            //遲到判斷 12
+            if (punchType == 1 && millisecondsNow > millisecondsToday + pm12) {
                 result = "遲到";
             } else if (
                 punchType == 2 &&
@@ -105,8 +107,23 @@ window.onload = function() {
             } else {
                 result = "正常";
             }
+        }else if (shiftType == 6) {
+            //全天班
 
+            //遲到判斷 12
+            if (punchType == 1 && millisecondsNow > millisecondsToday + pm12) {
+                result = "遲到";
+            } else if (
+                punchType == 2 &&
+                millisecondsNow < millisecondsToday + pm18
+            ) {
+                //早退判斷 18
+                result = "早退";
+            } else {
+                result = "正常";
+            }
         }
+
         // return result;
 
         if (result == "正常") {

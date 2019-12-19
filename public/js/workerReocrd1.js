@@ -21,12 +21,8 @@ window.onload = function() {
             let modalWorkerpunchId = this.document.getElementById("punchid");
             let modalWorkerName = this.document.getElementById("workname");
             let modalWorkerTime = this.document.getElementById("workpunchtime");
-            let workpunchresult = this.document.getElementById(
-                "workpunchresult"
-            );
-            let workpunchremark = this.document.getElementById(
-                "workpunchremark"
-            );
+            let workpunchresult = this.document.getElementById("workpunchresult");
+            let workpunchremark = this.document.getElementById("workpunchremark");
             let resultOptions = workpunchresult.children;
             //填入資料
 

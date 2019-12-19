@@ -51,9 +51,12 @@
                             <span class="input-group-text">班別</span>
                         </div>
                         <select  id="shiftType"  class="form-control" name="shift-type">
-                            <option value="3">全班</option>
-                            <option value="1">早班</option>
-                            <option value="2">午班</option>
+                            @foreach($shift_types as $shift_type)
+                                @if( $shift_type->status == 1)
+                                    <option value="{{$shift_type ->id}}">{{$shift_type ->name}}</option>
+                                @else
+                                @endif
+                            @endforeach
                         </select>
                     </div>
 

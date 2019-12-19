@@ -62,12 +62,15 @@ class AdminController extends Controller
     //檢視 -管理者打卡頁面
     public function home()
     {
+        $shift_type = ShiftType::all();
+        dd($shift_type);
+
         if (Auth::user()->isAdmin != 1) {
             return redirect()->back()->with('message', '限定管理者存取！');
         }
         //
         $records = Format::index();
-        return view('adminHome', ['now' => now(), 'records' => $records, 'message' => []]);
+        return view('adminHome', ['now' => now(), 'records' => $records, 'message' => [],'shift_types'=>$shift_type]);
     }
 
     //管理者檢視自己的打卡紀錄
@@ -234,7 +237,6 @@ class AdminController extends Controller
         //5. 調出所有班別
         $punchTypes = PunchType::all();
         $shiftTypes = ShiftType::all();
-
 
         //逐一整理資料 ｜ 總時數 - 遲到-早退-請假 ｜ 狀態-時間-事由
         return view('readWorks', ['month' => $month, 'now' => now(), 'shiftTypes' => $shiftTypes, 'punchTypes' => $punchTypes, 'workers' => $workers, 'workersPunchData' => $workersPunchData, 'records' => $records, 'message' => [],'sMonth' => $sMonth, 'sId' => $sId,]);
