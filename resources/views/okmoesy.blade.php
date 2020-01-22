@@ -1,76 +1,163 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <title>Laravel</title>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+@extends('layouts.app')
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+@section('content')
 
-            .full-height {
-                height: 100vh;
-            }
+    @if( \Session::has('message') )
+        <div class="alert alert-danger">
+            {{--                            @foreach($message as $m)--}}
+            <strong>{!! \Session::get('message') !!}</strong>
+            {{--                            @endforeach--}}
+        </div>
+    @endif
+    @if( \Session::has('messageSuccess') )
+        <div class="alert alert-success">
+            {{--                            @foreach($message as $m)--}}
+            <strong>{!! \Session::get('messageSuccess') !!}</strong>
+            {{--                            @endforeach--}}
+        </div>
+    @endif
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
 
-            .position-ref {
-                position: relative;
-            }
 
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
 
-            .content {
-                text-align: center;
-            }
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                @if(isset($_GET['message']) )
+                    <div class="alert alert-success">
+                        {{--                            @foreach($message as $m)--}}
+                        <strong>{{$_GET['message']}}</strong>
+                        {{--                            @endforeach--}}
+                    </div>
+                @endif
+                <div class="row">
+                    <div class="col-md-5">
+                        當前---用戶 : {{Auth::user()->name}}
+                    </div>
 
-            .title {
-                font-size: 84px;
-            }
+                    <div class="col-md-6">
 
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
+                        <div id="showbox" class="text-danger"></div>
+                    </div>
 
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-    <h1>
-       已經成功打卡
-    </h1>
-    <h1>
-    </h1>
-    <a href="ok123" class="btn btn-lg btn-secondary">儲存</a>
-    </body>
-</html>
+
+                </div>
+
+                <form  id="test123" name="myForm123" method="post">
+                    @csrf
+                    <br>
+
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">打卡動作類型</span>
+                            <input type="text">
+                        </div>
+
+                    </div>
+
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">班別</span>
+                            <input type="text">
+                        </div>
+
+                    </div>
+
+                    <div   class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">起始時間</span>
+                            <input type="text">
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div   class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">終止時間</span>
+                            <input type="text">
+                        </div>
+
+                    </div>
+
+
+                    <div class="input-group input-group-sm mb-3 d-none">
+                        <input  id="punchResult"  type="text" class="form-control" name="punchResult" >
+                    </div>
+
+                    <div  id="remark" class="input-group input-group-sm mb-3 d-none">
+                        <div class="input-group-prepend">
+                            <label for="remark" class="input-group-text" >遲到/早退原因</label>
+                        </div>
+                        <input type="text" class="form-control"  name="remark" placeholder="請輸入遲到or早退原因">
+                    </div>
+
+
+                    <button id="punchSubmit" class="btn btn-danger align-content-sm-end" type="submit">punch!!</button>
+
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+@endsection
+
+
+
+
+<script>
+
+    const small = Number.EPSILON
+    const bigInt = Number.MAX_SAFE_INTEGER
+    const max= Number.MAX_VALUE
+    const nInf = Number.NEGATIVE_INFINITY
+    const Inf = Number.POSITIVE_INFINITY
+
+    const dialog1 = "He looked up and said \"don't do that!\" to MAX.";
+    const dialog2 = 'He looked up and said "don\'t do that!" to MAX.';
+
+    const result1 = 3 + '30';
+    const result2 = 3 * 30;
+
+    let heating = true;
+    let cooling = false;
+
+    const RED = Symbol();
+    const ORANGE = Symbol("The color of a sunset!")
+
+    const sam1 = {
+        name: 'Sam',
+        age: 4,
+    }
+
+    const sam2 = { name: 'Sam', age: 4};
+
+    const sam3 = {
+        name: 'Sam',
+        classification:{
+            kingdom: 'Anamalia',
+            family: 'Felidae',
+        }
+    }
+
+    let test1 = sam3.classification.family;
+    let test2 = sam3["classification"].family
+    let test3 = sam3.classification["family"]
+    let test4 = sam3["classification"]["family"]
+
+    sam3.speak = function(){
+        return "Meow!";
+    }
+
+    let test5 = sam3.speak();
+    console.log(sam1,sam2,test1,test2,test3,test4,test5)
+
+
+</script>
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+

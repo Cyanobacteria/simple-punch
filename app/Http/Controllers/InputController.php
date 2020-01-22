@@ -644,6 +644,12 @@ class InputController extends Controller
 
          }
 
-        return view('ok123');
+
+
+
     }
+    public function test(){
+        return view('okmoesy');
+    }
+
 }

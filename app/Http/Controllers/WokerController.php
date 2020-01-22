@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
+use Illuminate\Support\Facades\Session;
+
 class WokerController extends Controller
 {
     /**
@@ -82,14 +84,15 @@ class WokerController extends Controller
             'remark' => $request->{'remark'} ? $request->{'remark'} : '',
         );
 
+        dd($punchData);
 
         //寫入DB- punchRecord
-        $result = $this->insertRecord((object) $punchData);
+        $result = $this->insertRecord((object)$punchData);
 
         //寫入DB- punchHistory - json 化
         PunchRecordHistory::create([
             'punch_record_id' => $result->id,
-            'raw_data' => json_encode((object) $punchData),
+            'raw_data' => json_encode((object)$punchData),
             'updated_at' => now()
         ]);
 

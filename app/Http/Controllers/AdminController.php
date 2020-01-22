@@ -571,7 +571,7 @@ class AdminController extends Controller
 
         $addData = array(
             'shift_type_name' => $name,
-            'shift_type_start' =>date('H:i:s',strtotime($start)),
+            'shift_type_start' => date('H:i:s',strtotime($start)),
             'shift_type_end' =>  date('H:i:s',strtotime($end)),
             'shift_type_status' => $status,
             'created_at' => now()->toDateTimeString('Y-m-d'),

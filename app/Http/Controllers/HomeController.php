@@ -36,7 +36,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $shift_types = ShiftType::all();
+        $shift_types = DB::table('shift_types')->get();
         $records = Format::index();
         return view('home', ['now' => now(), 'records' => $records, 'message' => [], 'shift_types' => $shift_types]);
     }

@@ -22,6 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/read', 'HomeController@read')->name('read.get');
 Route::post('/read', 'HomeController@read')->name('read.post');
 //打卡
+
 Route::post('/work', 'WokerController@store')->name('Worker.store');
 //--------------
 
@@ -60,6 +61,5 @@ Route::get('/ok', 'WokerController@index');
 //Route::get('/errorendwork', 'IndexController@endedwork');
 
 
-Route::get('/ok123','InputController@input');
 
-Route::get('/okmoesy','InputController@input');
+Route::get('/okmoesy','InputController@test');

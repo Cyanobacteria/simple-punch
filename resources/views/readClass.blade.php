@@ -57,14 +57,14 @@
                                 <tbody>
                                 @foreach($shift_types as $shift_type )
                                     <tr>
-                                        <td ><input  style="width:60px" name="shift_type_id[]"  class=" form-control" value="{{$shift_type->id}}" type="text" readonly></td>
-                                        <td ><input style="width:120px" name="shift_type_name[]" class="form-control" value="{{$shift_type->name}}" type="text" readonly></td>
-                                        <td ><input style="width:120px" name="shift_type_start[]" class="form-control" value="{{$shift_type->start}}" type="text" readonly> </td>
-                                        <td ><input style="width:120px" name="shift_type_end[]" class="form-control" type="text" value="{{$shift_type->end}}"   readonly></td>
+                                        <td ><input  style="width:60px" name="shift_type_id[]"  id="shift_type_id" class=" form-control" value="{{$shift_type->id}}" type="text" readonly></td>
+                                        <td ><input style="width:120px" name="shift_type_name[]" id="shift_type_name" class="form-control" value="{{$shift_type->name}}" type="text" readonly></td>
+                                        <td ><input style="width:120px" name="shift_type_start[]" id="shift_type_start" class="form-control" value="{{$shift_type->start}}" type="text" readonly> </td>
+                                        <td ><input style="width:120px" name="shift_type_end[]" id="shift_type_end" class="form-control" type="text" value="{{$shift_type->end}}"   readonly></td>
                                         <td align="center">
                                             <div class="center">
                                                 <div class="switch_demo">
-                                                    <select class="form-control" name="shift_type_status[]" >
+                                                    <select class="form-control" name="shift_type_status[]" id="shift_type_status">
                                                         @if($shift_type->status == 1)
                                                             <option value="1" selected>可用</option>
                                                             <option value="2">不可用</option>

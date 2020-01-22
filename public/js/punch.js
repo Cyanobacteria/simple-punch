@@ -29,6 +29,7 @@ window.onload = function() {
                 //顯示remark 欄位
                 let remarkDiv = document.getElementById("remark").classList;
                 remarkDiv.remove("d-none");
+
             }
         }
     });
@@ -37,9 +38,14 @@ window.onload = function() {
     function checkPunchResult(shiftType, punchType) {
         let time = new Date();
         let todayDate = `${time.getFullYear()}-${time.getMonth() +
-            1}-${time.getDate()} 00:00:00`;
+        1}-${time.getDate()} 00:00:00`;
         let millisecondsToday = Number(Date.parse(todayDate));
         let millisecondsNow = Number(Date.now());
+        let start_time = parseInt(document.getElementById("start").value);       //獲取上班時間小時數  (parseInt將輸入的字串轉為整數)
+        let end_time = parseInt(document.getElementById("end").value);          //獲取下班時間小時數
+
+        let start = 3600000 * start_time;
+        let end = 3600000 * end_time;
         let am09 = 3600000 * 9;
         let pm12 = 3600000 * 12;
         let pm13 = 3600000 * 13;
@@ -47,15 +53,16 @@ window.onload = function() {
         let result = "";
         let punchResult = "";
 
+
         //判斷式
         if (shiftType == 1) {
             //早班
             //遲到判斷 09
-            if (punchType == 1 && millisecondsNow > millisecondsToday + am09) {
+            if (punchType == 1 && millisecondsNow > millisecondsToday + start) {
                 result = "遲到";
             } else if (
                 punchType == 2 &&
-                millisecondsNow < millisecondsToday + pm12
+                millisecondsNow < millisecondsToday + end
             ) {
                 //早退判斷 12
                 result = "早退";
@@ -64,7 +71,6 @@ window.onload = function() {
             }
         } else if (shiftType == 2) {
             //午班
-
             //遲到判斷 13
             if (punchType == 1 && millisecondsNow > millisecondsToday + pm13) {
                 result = "遲到";
@@ -79,7 +85,6 @@ window.onload = function() {
             }
         } else if (shiftType == 3) {
             //全天班
-
             //遲到判斷 09
             if (punchType == 1 && millisecondsNow > millisecondsToday + am09) {
                 result = "遲到";
@@ -92,37 +97,21 @@ window.onload = function() {
             } else {
                 result = "正常";
             }
-        }else if (shiftType == 5) {
-            //全天班
-
-            //遲到判斷 12
-            if (punchType == 1 && millisecondsNow > millisecondsToday + pm12) {
+        } else {      //選擇的班別對應資料庫班別的ID
+            //午班
+            if (punchType == 1 && millisecondsNow > millisecondsToday + start
+            ) {           //起始時間
                 result = "遲到";
             } else if (
                 punchType == 2 &&
-                millisecondsNow < millisecondsToday + pm18
+                millisecondsNow < millisecondsToday + end       //終止時間
             ) {
-                //早退判斷 18
-                result = "早退";
-            } else {
-                result = "正常";
-            }
-        }else if (shiftType == 6) {
-            //全天班
-
-            //遲到判斷 12
-            if (punchType == 1 && millisecondsNow > millisecondsToday + pm12) {
-                result = "遲到";
-            } else if (
-                punchType == 2 &&
-                millisecondsNow < millisecondsToday + pm18
-            ) {
-                //早退判斷 18
                 result = "早退";
             } else {
                 result = "正常";
             }
         }
+
 
         // return result;
 
@@ -135,5 +124,10 @@ window.onload = function() {
         }
 
         return punchResult;
+
     }
-};
+
+
+}
+
+
