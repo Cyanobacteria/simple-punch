@@ -111,50 +111,15 @@
 
 <script>
 
-    const small = Number.EPSILON
-    const bigInt = Number.MAX_SAFE_INTEGER
-    const max= Number.MAX_VALUE
-    const nInf = Number.NEGATIVE_INFINITY
-    const Inf = Number.POSITIVE_INFINITY
+    let n = 0
+    let b1 = !!n
+    let b2 = Boolean(n)
 
-    const dialog1 = "He looked up and said \"don't do that!\" to MAX.";
-    const dialog2 = 'He looked up and said "don\'t do that!" to MAX.';
 
-    const result1 = 3 + '30';
-    const result2 = 3 * 30;
 
-    let heating = true;
-    let cooling = false;
 
-    const RED = Symbol();
-    const ORANGE = Symbol("The color of a sunset!")
+    console.log(n,b1,b2)
 
-    const sam1 = {
-        name: 'Sam',
-        age: 4,
-    }
-
-    const sam2 = { name: 'Sam', age: 4};
-
-    const sam3 = {
-        name: 'Sam',
-        classification:{
-            kingdom: 'Anamalia',
-            family: 'Felidae',
-        }
-    }
-
-    let test1 = sam3.classification.family;
-    let test2 = sam3["classification"].family
-    let test3 = sam3.classification["family"]
-    let test4 = sam3["classification"]["family"]
-
-    sam3.speak = function(){
-        return "Meow!";
-    }
-
-    let test5 = sam3.speak();
-    console.log(sam1,sam2,test1,test2,test3,test4,test5)
 
 
 </script>
